@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>🌱 마음의 근육 사용 설명서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --yellow:#FBE7A8; --yellow-dark:#F2B705;
+    --mint:#DCEEE0; --mint-dark:#8FBF9F;
+    --pink:#FBD9D6; --pink-dark:#F2665E;
+    --lavender:#DFF1FA; --lavender-dark:#6EC6E8;
+    --sky:#DFF1FA; --sky-dark:#6EC6E8;
+    --ink:#3A3226; --ink-soft:#8A7F6C;
+    --bg:#FFFBF2; --card:#FFFFFF;
+    --radius-lg:28px; --radius-md:18px; --radius-sm:12px;
+    --shadow:0 10px 24px rgba(58,50,38,0.12);
+    --shadow-sm:0 4px 10px rgba(58,50,38,0.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{ background:var(--bg); color:var(--ink); font-family:'Nanum Gothic', sans-serif; line-height:1.6; padding-bottom:80px; position:relative; }
+  h1,h2,h3{ font-family:'Gaegu', sans-serif; font-weight:700; margin:0 0 8px; }
+  h1{ font-size:1.5rem; } h2{ font-size:1.3rem; } h3{ font-size:1.05rem; }
+  p{ margin:4px 0; }
+  button{ font-family:inherit; cursor:pointer; }
+  input, textarea, select{
+    font-family:inherit; font-size:1rem; border:2px solid #EFE6D8; border-radius:var(--radius-sm);
+    padding:10px 14px; background:#FFFEFC; color:var(--ink); width:100%;
+  }
+  input:focus, textarea:focus, select:focus{ outline:none; border-color:var(--lavender-dark); box-shadow:0 0 0 3px rgba(199,170,242,0.25); }
+  textarea{ resize:vertical; min-height:64px; }
+  select:disabled, input:disabled{ background:#F3F0EA; color:var(--ink-soft); cursor:not-allowed; }
+
+  .btn-primary{
+    background:var(--sky-dark); color:#fff; border:none; border-radius:999px; padding:14px 28px;
+    font-family:'Gaegu', sans-serif; font-size:1.1rem; font-weight:700;
+    box-shadow:0 6px 0 rgba(0,0,0,0.12);
+    transition:transform .15s ease, box-shadow .15s ease;
+    animation:btnPulse 2.6s ease-in-out infinite;
+  }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 9px 0 rgba(0,0,0,0.12); }
+  .btn-primary:active{ transform:translateY(2px); box-shadow:0 3px 0 rgba(0,0,0,0.12); }
+  .btn-primary:disabled{ opacity:.5; cursor:not-allowed; transform:none; animation:none; box-shadow:0 6px 0 rgba(0,0,0,0.08); }
+  .btn-secondary{ background:#fff; color:var(--ink); border:2px solid #EFE6D8; border-radius:999px; padding:10px 22px; font-weight:bold; transition:transform .15s ease; }
+  .btn-secondary:hover{ transform:translateY(-2px); }
+  .btn-ghost{ background:transparent; border:none; color:var(--ink-soft); text-decoration:underline; font-size:0.9rem; padding:4px; }
+  .btn-submit{
+    background:var(--pink-dark); color:#fff; border:none; border-radius:999px; padding:10px 20px;
+    font-family:'Gaegu', sans-serif; font-weight:700; font-size:1.05rem;
+    box-shadow:0 5px 0 rgba(0,0,0,0.12);
+    transition:transform .15s ease, box-shadow .15s ease;
+    animation:btnPulse 2.6s ease-in-out infinite;
+  }
+  .btn-submit:hover{ transform:translateY(-3px); box-shadow:0 8px 0 rgba(0,0,0,0.12); }
+  .btn-submit:active{ transform:translateY(2px); box-shadow:0 2px 0 rgba(0,0,0,0.12); }
+  @keyframes btnPulse{
+    0%,100%{ box-shadow:0 6px 0 rgba(0,0,0,0.12); }
+    50%{ box-shadow:0 6px 0 rgba(0,0,0,0.12), 0 0 0 6px rgba(255,255,255,0.35); }
+  }
+
+  .wrap{ max-width:820px; margin:0 auto; padding:16px; }
+  header.topbar{ display:flex; align-items:center; justify-content:space-between; max-width:820px; margin:0 auto; padding:16px 16px 8px; gap:12px; flex-wrap:wrap; position:sticky; top:0; background:var(--bg); z-index:50; }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-emoji{ font-size:2rem; }
+  .profile-chip{ display:flex; align-items:center; gap:8px; background:var(--card); border-radius:999px; padding:8px 16px; box-shadow:var(--shadow-sm); font-size:0.9rem; flex-wrap:wrap; }
+
+  nav.tabs{ display:flex; gap:8px; max-width:820px; margin:0 auto 8px; padding:0 16px; overflow-x:auto; }
+  .tab-btn{ flex:1; white-space:nowrap; background:#fff; border:2px solid #EFE6D8; border-radius:999px; padding:10px 14px; font-size:0.95rem; font-weight:bold; color:var(--ink-soft); }
+  .tab-btn.active{ background:var(--lavender); border-color:var(--lavender-dark); color:var(--ink); }
+  .tab-btn.locked{ opacity:.55; }
+
+  main{ max-width:820px; margin:0 auto; padding:8px 16px 40px; }
+  .tab-panel{ display:none; } .tab-panel.active{ display:block; }
+
+  details.objective-note{ background:var(--mint); border-radius:var(--radius-md); padding:10px 16px; margin-bottom:16px; box-shadow:var(--shadow-sm); }
+  details.objective-note summary{ cursor:pointer; font-weight:bold; }
+  details.objective-note p{ margin-top:8px; }
+
+  .field-group{ margin-bottom:18px; }
+  .field-group label{ display:block; font-weight:bold; margin-bottom:6px; }
+
+  .situation-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-bottom:10px; }
+  @media (max-width:520px){ .situation-grid{ grid-template-columns:1fr; } }
+  .situation-card{ position:relative; background:var(--card); border-radius:var(--radius-md); padding:14px; box-shadow:var(--shadow-sm); border:2px solid transparent; cursor:pointer; transition:transform .12s ease, border-color .12s ease; }
+  .situation-card:hover{ transform:translateY(-2px); }
+  .situation-card.selected{ border-color:var(--lavender-dark); background:var(--lavender); }
+  .situation-card.disabled{ opacity:.35; cursor:not-allowed; }
+  .situation-card.disabled:hover{ transform:none; }
+  .situation-emoji{ font-size:1.6rem; }
+  .situation-title-row{ display:flex; align-items:center; gap:6px; margin:4px 0 2px; }
+  .situation-title{ font-weight:bold; }
+  .situation-check{ position:absolute; top:10px; right:10px; width:22px; height:22px; border-radius:50%; border:2px solid #EFE6D8; background:#fff; display:flex; align-items:center; justify-content:center; font-size:0.8rem; color:transparent; }
+  .situation-card.selected .situation-check{ background:var(--lavender-dark); border-color:var(--lavender-dark); color:#fff; }
+  .select-limit-msg{ color:#C9556A; font-size:0.85rem; min-height:1.2em; margin:-2px 0 12px; }
+  .group-label{ display:inline-block; font-family:'Gaegu', sans-serif; font-size:0.85rem; color:#fff; padding:4px 14px; border-radius:999px; margin-bottom:10px; }
+  .group-label.overcome{ background:var(--sky-dark); }
+  .group-label.struggle{ background:var(--pink-dark); }
+
+  .entry-card{ background:var(--card); border-radius:var(--radius-md); padding:16px; margin-bottom:16px; box-shadow:var(--shadow-sm); }
+  .entry-card h3{ margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .entry-card textarea, .entry-card input[type=text]{ margin-bottom:12px; }
+  .muscle-recap-btn{ background:var(--mint); border:none; border-radius:999px; font-size:0.78rem; padding:3px 12px; color:var(--ink); }
+
+  .export-controls{ background:var(--yellow); border-radius:var(--radius-md); padding:16px; text-align:center; box-shadow:var(--shadow-sm); }
+  .export-controls .btn-primary{ display:block; margin:12px auto 0; }
+  .mobile-save-hint{ font-size:0.8rem; color:var(--ink-soft); margin-top:6px; text-align:center; }
+
+  .field-hint{ font-size:0.82rem; color:var(--ink-soft); margin-top:4px; }
+  .situation-desc-box{ background:#F7F2FF; border-radius:var(--radius-sm); padding:10px 14px; font-size:0.92rem; color:var(--ink); margin-bottom:14px; }
+  .situation-desc-box b{ display:block; margin-bottom:2px; color:var(--ink-soft); font-size:0.8rem; }
+  .purpose-note{ background:var(--lavender); border-radius:var(--radius-md); padding:14px 18px; margin-bottom:16px; font-size:0.92rem; }
+  .app-tagline{ font-size:0.85rem; color:var(--ink-soft); margin:2px 0 0; }
+
+  .muscle-card{ background:var(--card); border-radius:var(--radius-md); padding:0; margin-bottom:14px; box-shadow:var(--shadow-sm); overflow:hidden; }
+  .muscle-card summary{ cursor:pointer; list-style:none; padding:16px; display:flex; align-items:center; gap:12px; font-family:'Gaegu', sans-serif; font-size:1.05rem; }
+  .muscle-card summary::-webkit-details-marker{ display:none; }
+  .muscle-card summary .muscle-emoji{ font-size:1.8rem; }
+  .muscle-card summary .muscle-ability{ font-size:0.85rem; color:var(--ink-soft); font-family:'Gowun Dodum', sans-serif; display:block; }
+  .muscle-card-body{ padding:0 18px 18px; }
+  .muscle-section{ margin-bottom:12px; }
+  .muscle-section-label{ font-weight:bold; font-size:0.88rem; color:var(--lavender-dark); margin-bottom:4px; }
+  .muscle-card ul{ margin:4px 0; padding-left:20px; font-size:0.92rem; }
+  .muscle-card ul li{ margin-bottom:4px; }
+  .muscle-rec-item{ font-size:0.9rem; margin-bottom:4px; }
+
+  .priority-row{ display:flex; gap:10px; align-items:center; margin-bottom:12px; flex-wrap:wrap; }
+  .priority-badge{ flex-shrink:0; width:34px; height:34px; border-radius:50%; background:var(--lavender-dark); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Gaegu',sans-serif; }
+  .priority-row select{ flex:1; min-width:200px; }
+
+  .style-toggle{ display:flex; gap:10px; margin-bottom:14px; }
+  .style-btn{ flex:1; background:#fff; border:2px solid #EFE6D8; border-radius:999px; padding:10px; font-weight:bold; color:var(--ink-soft); }
+  .style-btn.active{ background:var(--pink); border-color:var(--pink-dark); color:var(--ink); }
+  .postit-colors{ display:flex; gap:10px; margin-bottom:16px; justify-content:center; }
+  .color-dot{ width:32px; height:32px; border-radius:50%; border:3px solid transparent; }
+  .color-dot.yellow{ background:var(--yellow); } .color-dot.mint{ background:var(--mint); } .color-dot.pink{ background:var(--pink); }
+  .color-dot.active{ border-color:var(--ink-soft); }
+  .preview-wrap{ display:flex; justify-content:center; margin-bottom:20px; }
+  .letter-page{ width:340px; min-height:440px; background:#FFFDF6; border-radius:16px; box-shadow:var(--shadow); padding:28px 26px; font-family:'Gaegu', sans-serif; background-image:repeating-linear-gradient(#FFFDF6 0px, #FFFDF6 34px, #EFE4CE 35px); }
+  .letter-header{ font-size:1.2rem; font-weight:bold; margin-bottom:16px; }
+  .letter-body{ font-size:1.15rem; white-space:pre-wrap; min-height:260px; }
+  .letter-footer{ margin-top:20px; text-align:right; font-size:0.95rem; color:var(--ink-soft); }
+  .postit-page{ width:300px; min-height:300px; border-radius:6px; box-shadow:var(--shadow); padding:26px 22px; font-family:'Gaegu', sans-serif; transform:rotate(-2deg); display:flex; flex-direction:column; }
+  .postit-page.yellow{ background:var(--yellow); } .postit-page.mint{ background:var(--mint); } .postit-page.pink{ background:var(--pink); }
+  .postit-header{ font-size:1.1rem; font-weight:bold; margin-bottom:10px; }
+  .postit-body{ font-size:1.05rem; white-space:pre-wrap; flex:1; }
+  .postit-footer{ margin-top:14px; text-align:right; font-size:0.9rem; color:var(--ink-soft); }
+
+  .modal-overlay{ position:fixed; inset:0; background:rgba(58,50,38,0.45); display:flex; align-items:center; justify-content:center; padding:12px; z-index:100; }
+  .modal{ background:var(--card); border-radius:var(--radius-lg); padding:26px; width:min(94vw, 540px); max-height:92vh; overflow-y:auto; box-shadow:var(--shadow); position:relative; }
+  .modal .close-x{ position:absolute; top:14px; right:18px; background:none; border:none; font-size:1.3rem; color:var(--ink-soft); }
+  .subtitle{ color:var(--ink-soft); margin-bottom:14px; }
+  .objectives-list{ margin-bottom:20px; }
+  .objective-item{ display:flex; align-items:flex-start; gap:12px; background:#FFFBF3; border:2px solid #F3EAD8; border-radius:var(--radius-md); padding:12px 16px; margin-bottom:10px; }
+  .objective-num{ flex-shrink:0; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Gaegu', sans-serif; font-size:1rem; color:#fff; }
+  .objective-item:nth-child(1) .objective-num{ background:var(--yellow-dark); }
+  .objective-item:nth-child(2) .objective-num{ background:var(--mint-dark); }
+  .objective-item:nth-child(3) .objective-num{ background:var(--pink-dark); }
+  .objective-item:nth-child(4) .objective-num{ background:var(--lavender-dark); }
+  .objective-text{ font-size:1.05rem; font-weight:bold; line-height:1.5; }
+  #profileForm label{ display:block; margin-bottom:12px; font-weight:bold; }
+  #profileForm input{ margin-top:6px; }
+  .diag-link-btn{ display:block; text-align:center; background:var(--sky); color:var(--ink); text-decoration:none; font-weight:bold; border-radius:999px; padding:12px; margin-bottom:16px; }
+  .lookup-row{ display:flex; gap:8px; }
+  .lookup-row input{ flex:1; }
+  .lookup-result{ margin-top:8px; padding:10px 14px; border-radius:var(--radius-sm); font-size:0.9rem; }
+  .lookup-result.ok{ background:var(--mint); }
+  .lookup-result.err{ background:var(--pink); }
+
+  .banner{ position:fixed; bottom:0; left:0; right:0; background:var(--lavender); box-shadow:0 -6px 16px rgba(0,0,0,0.1); padding:14px 16px; z-index:90; display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; text-align:center; }
+  .banner-actions{ display:flex; gap:10px; }
+
+  .friends-locked{ text-align:center; padding:40px 20px; background:var(--card); border-radius:var(--radius-md); box-shadow:var(--shadow-sm); }
+  .friend-entry{ background:var(--card); border-radius:var(--radius-md); padding:14px 16px; margin-bottom:12px; box-shadow:var(--shadow-sm); }
+  .friend-entry .muscle-tag{ display:inline-block; background:var(--lavender); border-radius:999px; padding:2px 12px; font-size:0.82rem; font-weight:bold; margin-bottom:8px; }
+  .friend-entry .type-tag{ font-size:0.75rem; color:var(--ink-soft); margin-left:6px; }
+
+  [hidden]{ display:none !important; }
+
+  /* ---------- 배경 떠다니는 하트 & 반짝임 (홈 화면과 톤 통일) ---------- */
+  .ambient{ position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+  .ambient span{ position:absolute; bottom:-40px; opacity:0.4; animation:drift linear infinite; font-size:24px; }
+  @keyframes drift{
+    0%{ transform:translateY(0) rotate(0deg); opacity:0; }
+    10%{ opacity:0.45; }
+    90%{ opacity:0.35; }
+    100%{ transform:translateY(-110vh) rotate(20deg); opacity:0; }
+  }
+  header.topbar, nav.tabs, main, #mainApp{ position:relative; z-index:1; }
+
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
+  header.topbar{ opacity:0; animation:fadeUp 0.6s ease-out 0.05s forwards; }
+  nav.tabs{ opacity:0; animation:fadeUp 0.6s ease-out 0.2s forwards; }
+  main{ opacity:0; animation:fadeUp 0.6s ease-out 0.35s forwards; }
+  .modal{ animation:cardIn 0.4s cubic-bezier(.2,.8,.3,1.2); }
+  @keyframes cardIn{ from{ opacity:0; transform:translateY(16px) scale(0.97); } to{ opacity:1; transform:translateY(0) scale(1); } }
+
+  @media (prefers-reduced-motion: reduce){
+    .btn-primary, .btn-submit, header.topbar, nav.tabs, main, .modal, .ambient span{ animation:none !important; }
+    .ambient{ display:none; }
+  }
+
+  @media (min-width:900px){
+    body{ font-size:1.08rem; }
+    .wrap, header.topbar, nav.tabs, main{ max-width:1040px; }
+    h1{ font-size:1.85rem; } h2{ font-size:1.55rem; } h3{ font-size:1.2rem; }
+    .situation-grid{ grid-template-columns:repeat(3, 1fr); gap:16px; }
+    .modal{ width:min(80vw, 640px); padding:36px; }
+    .letter-page{ width:420px; min-height:520px; }
+    .postit-page{ width:360px; min-height:360px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient" id="ambient"></div>
+
+<!-- ===================== Welcome Modal ===================== -->
+<div id="welcomeModal" class="modal-overlay" hidden>
+  <div class="modal">
+    <h1>🌱 마음의 근육 사용 설명서</h1>
+    <p class="subtitle">청소년 약물 오남용 예방 · 중독 예방을 위한 자기이해 활동이에요.</p>
+
+    <a class="diag-link-btn" href="https://t00amazing.github.io/drug-compass/" target="_blank" rel="noopener">
+      🧭 아직 자가진단을 안 했다면? Drug Compass 진단하러 가기
+    </a>
+
+    <div class="purpose-note">
+      이 활동은 위험을 찾아내는 검사가 아니라, 내 안의 건강한 힘(마음의 근육)을 발견해서 <b>약물 오남용과 중독으로부터 나를 지키는 방법</b>을 스스로 익히는 시간이에요.
+    </div>
+    <p class="subtitle" style="margin-bottom:6px;">🎯 오늘의 학습 목표</p>
+    <div class="objectives-list">
+      <div class="objective-item"><span class="objective-num">1</span><span class="objective-text">자가진단으로 발견한 상위 3가지 마음의 근육을 이 활동에 이어서 적용할 수 있다.</span></div>
+      <div class="objective-item"><span class="objective-num">2</span><span class="objective-text">내 근육이 실제 상황에서 어떻게 작동하는지 구체적인 대응법을 스스로 만들 수 있다.</span></div>
+      <div class="objective-item"><span class="objective-num">3</span><span class="objective-text">내 근육이 흔들릴 수 있는 상황을 인식하고, 그때 필요한 힘을 찾을 수 있다.</span></div>
+      <div class="objective-item"><span class="objective-num">4</span><span class="objective-text">마음의 근육으로 나를 지킬 수 있다는 확신을 한 문장으로 선언할 수 있다.</span></div>
+    </div>
+
+    <form id="profileForm">
+      <label>학번
+        <div class="lookup-row">
+          <input type="text" id="inputStudentId" required placeholder="학번을 입력해주세요 (예: 10315)">
+          <button type="button" class="btn-secondary" id="lookupBtn">확인</button>
+        </div>
+        <span class="field-hint">명렬표에 등록된 학번을 입력하면 이름이 자동으로 나와요.</span>
+      </label>
+      <div id="lookupResult" hidden></div>
+      <input type="hidden" id="confirmedName">
+      <button type="submit" class="btn-primary" id="startBtn" disabled>시작하기</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== Muscle Recap Modal ===================== -->
+<div id="muscleRecapModal" class="modal-overlay" hidden>
+  <div class="modal" style="max-width:400px;">
+    <button class="close-x" id="recapCloseBtn">×</button>
+    <h2>🌟 내 근육</h2>
+    <div id="recapList"></div>
+    <button class="btn-secondary" id="openFullEncyclopediaBtn" style="width:100%; margin-top:10px;">📚 근육사전 전체보기</button>
+  </div>
+</div>
+
+<!-- ===================== Main App ===================== -->
+<div id="mainApp" hidden>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-emoji">🌱</span>
+      <div>
+        <h1>마음의 근육 사용 설명서</h1>
+        <p class="app-tagline">청소년 약물 오남용·중독 예방 자기이해 활동</p>
+      </div>
+    </div>
+    <div class="profile-chip">
+      <span id="profileChipText">-</span>
+      <button class="btn-submit" id="submitBtn">✅ 제출하기</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="tabMuscle">📚 근육사전</button>
+    <button class="tab-btn locked" data-tab="tabSituation">🃏 상황 카드연습</button>
+    <button class="tab-btn locked" data-tab="tabDeclare">💌 근육 사용 선언</button>
+    <button class="tab-btn locked" data-tab="tabFriends">👥 친구들 이야기</button>
+  </nav>
+
+  <main>
+    <!-- ---------- TAB: 근육사전 ---------- -->
+    <section id="tabMuscle" class="tab-panel active">
+      <details class="objective-note" open>
+        <summary>🎯 이 활동의 목표</summary>
+        <p>자가진단으로 발견한 상위 3가지 마음의 근육을 이 활동에 이어서 적용할 수 있다.</p>
+      </details>
+
+      <h2>내 마음의 근육 선택하기</h2>
+      <p>Drug Compass 자가진단 결과를 보고, 나의 상위 3가지 근육을 우선순위대로 선택해주세요.</p>
+      <div class="priority-row"><span class="priority-badge">1</span><select id="musclePick1"></select></div>
+      <div class="priority-row"><span class="priority-badge">2</span><select id="musclePick2"></select></div>
+      <div class="priority-row"><span class="priority-badge">3</span><select id="musclePick3"></select></div>
+      <p class="field-hint" id="musclePickHint"></p>
+
+      <div class="purpose-note" style="margin-top:20px;">
+        📚 아래는 10가지 마음의 근육 전체 목록이에요. 카드를 눌러 특징 · 점검사항 · 조언 · 추천 캐릭터를 확인할 수 있어요.
+      </div>
+      <div id="muscleList"></div>
+    </section>
+
+    <!-- ---------- TAB: 상황카드연습 ---------- -->
+    <section id="tabSituation" class="tab-panel">
+      <details class="objective-note" open>
+        <summary>🎯 이 활동의 목표</summary>
+        <p>내 근육이 실제 상황에서 어떻게 작동하는지, 또 흔들릴 수 있는 지점은 어디인지 스스로 찾을 수 있다.</p>
+      </details>
+
+      <span class="group-label overcome">💪 이겨낼 수 있는 상황 2개</span>
+      <p>내 근육으로 잘 대응할 수 있을 것 같은 상황을 <strong>2가지</strong> 골라보세요. (<span id="overcomeCount">0</span>/2)</p>
+      <div class="situation-grid" id="overcomeGrid"></div>
+      <div class="select-limit-msg" id="overcomeLimitMsg"></div>
+      <div id="overcomeEntries"></div>
+
+      <span class="group-label struggle">🌪️ 흔들릴 수 있는 상황 2개</span>
+      <p>지금의 내 근육으로는 대응하기 어려울 것 같은 상황을 <strong>2가지</strong> 골라보세요. (앞에서 고른 상황과 겹칠 수 없어요) (<span id="struggleCount">0</span>/2)</p>
+      <div class="situation-grid" id="struggleGrid"></div>
+      <div class="select-limit-msg" id="struggleLimitMsg"></div>
+      <div id="struggleEntries"></div>
+
+      <div class="export-controls">
+        <button class="btn-primary" id="situationExportBtn">🖼️ 이미지로 내보내기</button>
+        <p class="mobile-save-hint">📱 모바일에서는 이미지가 새 탭에 열릴 수 있어요. 그럴 땐 이미지를 길게 눌러 저장해주세요.</p>
+      </div>
+    </section>
+
+    <!-- ---------- TAB: 근육사용선언 ---------- -->
+    <section id="tabDeclare" class="tab-panel">
+      <details class="objective-note" open>
+        <summary>🎯 이 활동의 목표</summary>
+        <p>마음의 근육으로 나를 지킬 수 있다는 확신을 한 문장으로 선언할 수 있다.</p>
+      </details>
+      <h2>근육 사용 선언</h2>
+
+      <div class="field-group">
+        <label>나의 근육 <button type="button" class="muscle-recap-btn" data-recap>🌟 내 근육 다시 보기</button></label>
+        <select id="declareMuscleSelect"></select>
+        <input type="text" id="declareMuscleCustom" placeholder="근육 이름을 직접 적어주세요" hidden style="margin-top:8px;">
+      </div>
+      <div class="field-group">
+        <label>그 순간의 나에게 —</label>
+        <textarea id="declareLetter" rows="8" placeholder="흔들리는 순간의 나에게 하고 싶은 말을 자유롭게 적어보세요"></textarea>
+      </div>
+
+      <div class="style-toggle">
+        <button class="style-btn active" data-style="letter">💌 편지지</button>
+        <button class="style-btn" data-style="postit">📝 포스트잇</button>
+      </div>
+      <div class="postit-colors" id="postitColors" hidden>
+        <button class="color-dot yellow active" data-color="yellow"></button>
+        <button class="color-dot mint" data-color="mint"></button>
+        <button class="color-dot pink" data-color="pink"></button>
+      </div>
+
+      <div class="preview-wrap">
+        <div class="letter-page" id="letterPreview">
+          <div class="letter-header">나의 근육: <span id="letterMuscleText"></span></div>
+          <div class="letter-body" id="letterBodyText"></div>
+          <div class="letter-footer"><span id="letterDate"></span> · <span id="letterName"></span></div>
+        </div>
+        <div class="postit-page yellow" id="postitPreview" hidden>
+          <div class="postit-header">나의 근육: <span id="postitMuscleText"></span></div>
+          <div class="postit-body" id="postitBodyText"></div>
+          <div class="postit-footer"><span id="postitDate"></span> · <span id="postitName"></span></div>
+        </div>
+      </div>
+
+      <div class="export-controls">
+        <button class="btn-primary" id="declareExportBtn">🖼️ 이미지로 내보내기</button>
+        <p class="mobile-save-hint">📱 모바일에서는 이미지가 새 탭에 열릴 수 있어요. 그럴 땐 이미지를 길게 눌러 저장해주세요.</p>
+      </div>
+    </section>
+
+    <!-- ---------- TAB: 친구들이야기 ---------- -->
+    <section id="tabFriends" class="tab-panel">
+      <h2>👥 친구들 이야기</h2>
+      <p>다른 친구들은 같은 상황에서 어떤 근육을 썼을까요? (이름은 표시되지 않아요)</p>
+      <div id="friendsLockedBox" class="friends-locked" hidden>
+        <p>🔒 먼저 활동을 마치고 <b>제출하기</b>를 눌러야 친구들 이야기를 볼 수 있어요.</p>
+      </div>
+      <div id="friendsUnlockedBox" hidden>
+        <div class="field-group">
+          <label>어떤 상황이 궁금한가요?</label>
+          <select id="friendsSituationSelect"></select>
+        </div>
+        <div id="friendsList"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="banner" id="resetBanner" hidden>
+  <span id="bannerMsg">🎉 제출이 완료되었어요!</span>
+  <div class="banner-actions">
+    <button class="btn-secondary" id="bannerDismissBtn">닫기</button>
+  </div>
+</div>
+
+<div id="exportSandbox" style="position:absolute; left:-9999px; top:0; width:640px;"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ⚠️ 배포한 GAS 웹앱 URL을 여기에 넣어주세요
+  var SCRIPT_URL = 'PASTE_YOUR_GAS_WEBAPP_URL_HERE';
+
+  /* ---------------- Data ---------------- */
+  var SITUATIONS = [
+    {id:1, emoji:'🚬', title:'한 개비만', desc:'축제 뒤풀이 자리에서 친한 선배가 "스트레스 풀려면 이거 하나면 돼"라며 전자담배를 건넨다. "한번 피워봐, 중독 안 돼"라는 말이 따라온다.'},
+    {id:2, emoji:'🍺', title:'분위기 때문에', desc:'수능이 끝난 뒤 친구들이 "이제 마셔도 되잖아"라며 편의점 앞에서 캔맥주를 권한다. 분위기상 거절하면 혼자만 이상한 사람이 될 것 같다.'},
+    {id:3, emoji:'📱', title:'숏폼의 늪', desc:'숙제를 하려고 폰을 들었는데, 릴스를 3개만 보고 놓으려다 어느새 1시간이 지났다. 알고리즘이 계속 "딱 하나만 더"를 추천한다.'},
+    {id:4, emoji:'☕', title:'카페인으로 버티기', desc:'기말고사 일주일 전. 잠을 쫓으려고 하루에 에너지 음료 2캔과 커피 2잔을 마셨다. 손이 떨리고 심장이 빨리 뛰는 것 같은데 "시험 끝나면 괜찮겠지"라고 생각한다.'},
+    {id:5, emoji:'💉', title:'공부 잘하는 친구의 비결', desc:'반에서 성적이 오른 친구가 "나 ADHD 약 먹는데 집중이 잘 돼. 너도 한번 먹어봐"라며 처방받은 약을 나눠주려 한다. "약이니까 안전하지 않냐"는 말도 덧붙인다.'},
+    {id:6, emoji:'💊', title:'완벽한 몸을 약속하는 것들', desc:'인플루언서가 "이거 한 달만 먹었더니 살 빠졌다"며 보조제를 소개했다. 처방전도 필요 없고 후기도 많다. 솔직히 한번 사보고 싶다.'},
+    {id:7, emoji:'😰', title:'불안을 없애주는 영상', desc:'발표 전날 너무 긴장돼서 유튜브를 틀었다. 요즘 불안할 때마다 자동으로 영상을 켜게 된다. 불안이 잠깐 사라지는 것 같아서 잘 시간이 됐는데도 끄기가 싫다.'},
+    {id:8, emoji:'❤️', title:'좋아요의 중독', desc:'어제 올린 사진의 좋아요 수가 신경 쓰여서 30분에 한 번씩 앱을 열어 확인하고 있다. 숫자가 적으면 기분이 가라앉고, 많으면 더 올리고 싶어진다.'},
+    {id:9, emoji:'🎮', title:'게임 보상의 함정', desc:'새벽 1시. 오늘 안에 레벨업을 달성하면 한정 아이템을 준다는 알림이 왔다. 내일 시험이 있지만 "이것만 하고 자면 되잖아"라는 생각이 든다.'},
+    {id:10, emoji:'⚠️', title:'딱 한 번만 해보면', desc:'온라인 커뮤니티에서 "마약이 생각보다 별거 아니다", "한 번 해봤는데 괜찮았어"라는 글들을 보게 됐다. 실제로 아는 사람도 한 번 해봤다고 했다.'}
+  ];
+
+  var MUSCLES = [
+    { id:1, emoji:'🐱', name:'탐구냥', ability:'호기심 조절력', trait:'위험한 자극 앞에서 "진짜 안전한지" 멈춰서 따져보는 근육이에요.', checklist:['SNS나 친구한테 처음 듣는 약·음료 얘기에 끌렸던 적이 있는지 떠올려보기','직접 해보지 않고도 확인할 수 있는 방법을 알고 있는지 점검해보기'], advice:'호기심은 줄이지 않아도 괜찮아요. "직접 해보기" 전에 "찾아보고 물어보기" 한 단계만 거치면 충분해요.', recommended:[{name:'지혜부엉', reason:'위험성을 정확히 알아봐요.'}] },
+    { id:2, emoji:'🦁', name:'당당사자', ability:'또래 거절력', trait:'친구의 권유 앞에서도 내 선택을 지키는 근육이에요.', checklist:['거절했을 때 분위기가 어색해질까봐 망설였던 순간이 있었는지 떠올려보기'], advice:'거절은 관계를 끊는 행동이 아니라 지키는 행동이에요.', recommended:[{name:'용기토끼', reason:'도움을 요청하는 용기가 선택을 지켜줘요.'}] },
+    { id:3, emoji:'🐨', name:'여유코알라', ability:'스트레스 해소력', trait:'힘든 감정을 건강한 방법으로 풀어내는 근육이에요.', checklist:['요즘 스트레스 풀 때 가장 자주 쓰는 방법이 뭔지 떠올려보기'], advice:'스트레스는 흘려보내는 거예요. 나에게 맞는 방법을 2~3개 미리 정해두세요.', recommended:[{name:'다정몽몽', reason:'힘든 마음을 나누는 것도 해소법이에요.'}] },
+    { id:4, emoji:'🐿️', name:'똑똑다람쥐', ability:'카페인·각성제 절제력', trait:'피로나 졸음 앞에서 각성 음료·약물에 의존하지 않는 근육이에요.', checklist:['최근 한 달 카페인 음료 섭취 횟수를 떠올려보기'], advice:'규칙적인 수면이 집중력에 훨씬 오래가는 효과를 줘요.', recommended:[{name:'포근판다', reason:'잠으로 피로를 풀어요.'}] },
+    { id:5, emoji:'🐶', name:'다정몽몽', ability:'가족·신뢰관계 소통력', trait:'힘든 마음을 혼자 끌어안지 않고 나누는 근육이에요.', checklist:['고민을 누구한테 가장 먼저 얘기했는지 떠올려보기'], advice:'혼자 견디는 것보다 함께 나누는 게 훨씬 큰 힘이 돼요.', recommended:[{name:'용기토끼', reason:'같은 방향을 보는 근육이에요.'}] },
+    { id:6, emoji:'🐼', name:'포근판다', ability:'수면·컨디션 관리력', trait:'몸의 신호를 무시하지 않는 근육이에요.', checklist:['요즘 평균 수면 시간을 세어보기'], advice:'수면은 가장 마지막까지 지켜야 하는 것이에요.', recommended:[{name:'똑똑다람쥐', reason:'악순환을 함께 끊어줘요.'}] },
+    { id:7, emoji:'🐢', name:'꾸준거북', ability:'성과압박 대응력', trait:'빠른 효과보다 건강한 노력을 선택하는 근육이에요.', checklist:['마음이 급해졌던 순간을 떠올려보기'], advice:'빠른 효과를 약속하는 것일수록 부작용 위험이 커요.', recommended:[{name:'똑똑다람쥐', reason:'건강하게 가는 길을 선택해요.'}] },
+    { id:8, emoji:'🐧', name:'똑똑펭귄', ability:'미디어 분별력', trait:'화면 속 모습과 현실을 구분해서 보는 근육이에요.', checklist:['멋있게 그려진 콘텐츠를 본 적이 있는지 떠올려보기'], advice:'"이게 진짜 모습일까?"를 한 번 더 물어보세요.', recommended:[{name:'지혜부엉', reason:'숨은 위험을 함께 알아요.'}] },
+    { id:9, emoji:'🦉', name:'지혜부엉', ability:'정확한 위험 인지력', trait:'사실에 근거해서 판단하는 근육이에요.', checklist:['정확한 출처가 있는 정보인지 떠올려보기'], advice:'정확하게 아는 것이 가장 강력한 예방이에요.', recommended:[{name:'똑똑펭귄', reason:'잘못된 정보를 가려내요.'}] },
+    { id:10, emoji:'🐰', name:'용기토끼', ability:'도움요청력', trait:'흔들리는 순간에도 도움을 요청하는 근육이에요.', checklist:['도움이 필요한 친구를 어디로 연결할지 알고 있는지 점검해보기'], advice:'도움을 요청하는 건 회복으로 가는 가장 빠른 길이에요.', recommended:[{name:'당당사자', reason:'같은 뿌리의 용기예요.'}] }
+  ];
+
+  /* 배경 떠다니는 하트 & 반짝임 생성 */
+  (function initAmbient(){
+    var symbols = ['❤️','✨','💛','🌟'];
+    var ambient = document.getElementById('ambient');
+    var count = window.innerWidth < 640 ? 8 : 14;
+    for (var i = 0; i < count; i++) {
+      var s = document.createElement('span');
+      s.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      s.style.left = Math.random() * 100 + '%';
+      s.style.fontSize = (14 + Math.random() * 16) + 'px';
+      s.style.animationDuration = (10 + Math.random() * 8) + 's';
+      s.style.animationDelay = (Math.random() * 10) + 's';
+      ambient.appendChild(s);
+    }
+  })();
+
+  var LS_KEY = 'mgs2_state';
+
+  var state = loadState() || {
+    profile: null,
+    hasSubmitted: false,
+    muscles: ['', '', ''],
+    overcomeIds: [],
+    struggleIds: [],
+    overcomeData: {}, // situationId -> {usedMuscle,reason,response,wobbleReason,recover}
+    struggleData: {}, // situationId -> {why,neededMuscle,practice}
+    declare: { muscleMode:'select', muscle:'', custom:'', letter:'', style:'letter', color:'yellow' }
+  };
+
+  function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+  function loadState(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){ return null; } }
+
+  function situationById(id){ return SITUATIONS.filter(function(s){ return s.id===Number(id); })[0]; }
+  function muscleLabel(m){ return m ? (m.name + '(' + m.ability + ')') : ''; }
+
+  /* ---------------- API helpers ---------------- */
+  function apiGet(params){
+    var qs = Object.keys(params).map(function(k){ return k+'='+encodeURIComponent(params[k]); }).join('&');
+    return fetch(SCRIPT_URL + '?' + qs).then(function(r){ return r.json(); });
+  }
+  function apiPost(body){
+    return fetch(SCRIPT_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(body)
+    }).then(function(r){ return r.json(); });
+  }
+
+  /* ================= Welcome flow ================= */
+  var welcomeModal = document.getElementById('welcomeModal');
+  var mainApp = document.getElementById('mainApp');
+
+  document.getElementById('lookupBtn').addEventListener('click', function(){
+    var sid = document.getElementById('inputStudentId').value.trim();
+    var resultBox = document.getElementById('lookupResult');
+    if(!sid){ return; }
+    resultBox.hidden = true;
+    apiGet({action:'lookupStudent', studentId: sid}).then(function(res){
+      resultBox.hidden = false;
+      if(res.found){
+        resultBox.className = 'lookup-result ok';
+        resultBox.textContent = '✅ ' + res.name + ' 학생 맞나요? 맞으면 시작하기를 눌러주세요.';
+        document.getElementById('confirmedName').value = res.name;
+        document.getElementById('startBtn').disabled = false;
+      } else {
+        resultBox.className = 'lookup-result err';
+        resultBox.textContent = '❌ 등록되지 않은 학번이에요. 다시 확인해주세요.';
+        document.getElementById('startBtn').disabled = true;
+      }
+    }).catch(function(){
+      resultBox.hidden = false;
+      resultBox.className = 'lookup-result err';
+      resultBox.textContent = '⚠️ 서버에 연결할 수 없어요. 네트워크를 확인해주세요.';
+    });
+  });
+
+  document.getElementById('profileForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var sid = document.getElementById('inputStudentId').value.trim();
+    var name = document.getElementById('confirmedName').value;
+    if(!name){ return; }
+    state.profile = { studentId: sid, name: name };
+    saveState();
+    enterApp();
+  });
+
+  function enterApp(){
+    welcomeModal.hidden = true;
+    mainApp.hidden = false;
+    document.getElementById('profileChipText').textContent = state.profile.name + ' (' + state.profile.studentId + ')';
+    renderAll();
+    if(state.hasSubmitted){ unlockFriendsTab(); }
+  }
+
+  /* ================= Tabs ================= */
+  document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(btn.classList.contains('locked')){
+        if(btn.dataset.tab === 'tabFriends'){
+          alert('🔒 먼저 활동을 마치고 제출하기를 눌러야 친구들 이야기를 볼 수 있어요.');
+        } else {
+          alert('🔒 근육사전에서 나의 근육 3가지를 모두 선택해야 다음으로 넘어갈 수 있어요.');
+        }
+        return;
+      }
+      document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+      if(btn.dataset.tab === 'tabFriends'){ renderFriendsTab(); }
+    });
+  });
+
+  /* ================= 근육사전 탭 ================= */
+  function renderMusclePicks(){
+    ['musclePick1','musclePick2','musclePick3'].forEach(function(id, idx){
+      var sel = document.getElementById(id);
+      sel.innerHTML = '<option value="">선택 안 함</option>' + MUSCLES.map(function(m){
+        return '<option value="'+m.name+'"'+(state.muscles[idx]===m.name?' selected':'')+'>'+muscleLabel(m)+'</option>';
+      }).join('');
+      sel.onchange = function(){
+        state.muscles[idx] = sel.value;
+        saveState();
+        renderMuscleDependentUI();
+      };
+    });
+  }
+
+  function renderMuscleList(){
+    var box = document.getElementById('muscleList');
+    box.innerHTML = MUSCLES.map(function(m){
+      return '<details class="muscle-card"><summary><span class="muscle-emoji">'+m.emoji+'</span><span><div>'+m.name+'</div><span class="muscle-ability">'+m.ability+'</span></span></summary>'+
+        '<div class="muscle-card-body">'+
+          '<div class="muscle-section"><div class="muscle-section-label">특징</div><p>'+m.trait+'</p></div>'+
+          '<div class="muscle-section"><div class="muscle-section-label">점검해보기</div><ul>'+m.checklist.map(function(c){return '<li>'+c+'</li>';}).join('')+'</ul></div>'+
+          '<div class="muscle-section"><div class="muscle-section-label">조언</div><p>'+m.advice+'</p></div>'+
+          '<div class="muscle-section"><div class="muscle-section-label">함께 키우면 좋은 근육</div>'+m.recommended.map(function(r){return '<div class="muscle-rec-item">🔗 <b>'+r.name+'</b> - '+r.reason+'</div>';}).join('')+'</div>'+
+        '</div></details>';
+    }).join('');
+  }
+
+  /* ================= 근육 선택 여부에 따라 다른 탭 갱신 ================= */
+  function renderMuscleDependentUI(){
+    renderEntries('overcome');
+    renderDeclareMuscleSelect();
+    var picked = state.muscles.filter(Boolean);
+    var complete = picked.length === 3;
+    document.getElementById('musclePickHint').textContent = complete ? '✅ 3개 모두 선택했어요! 이제 다음 탭으로 넘어갈 수 있어요.' : '⚠️ 근육 3가지를 모두 선택해야 다음 탭으로 넘어갈 수 있어요. (' + picked.length + '/3)';
+    var situationTab = document.querySelector('.tab-btn[data-tab="tabSituation"]');
+    var declareTab = document.querySelector('.tab-btn[data-tab="tabDeclare"]');
+    if(complete){
+      situationTab.classList.remove('locked');
+      declareTab.classList.remove('locked');
+    } else {
+      situationTab.classList.add('locked');
+      declareTab.classList.add('locked');
+    }
+  }
+
+  /* ================= 상황카드연습 탭 ================= */
+  function renderSituationGrids(){
+    renderGrid('overcome');
+    renderGrid('struggle');
+  }
+
+  function renderGrid(group){
+    var otherGroup = group === 'overcome' ? 'struggle' : 'overcome';
+    var gridEl = document.getElementById(group+'Grid');
+    var selectedIds = state[group+'Ids'];
+    var otherIds = state[otherGroup+'Ids'];
+
+    gridEl.innerHTML = SITUATIONS.map(function(s){
+      var selected = selectedIds.indexOf(s.id) > -1;
+      var disabled = !selected && (otherIds.indexOf(s.id) > -1 || selectedIds.length >= 2);
+      return '<div class="situation-card'+(selected?' selected':'')+(disabled?' disabled':'')+'" data-id="'+s.id+'" data-group="'+group+'">'+
+        '<div class="situation-check">✓</div>'+
+        '<div class="situation-emoji">'+s.emoji+'</div>'+
+        '<div class="situation-title-row"><span class="situation-title">'+s.title+'</span></div>'+
+        '<div style="font-size:0.82rem;color:var(--ink-soft);">'+s.desc.slice(0,28)+'...</div>'+
+        '</div>';
+    }).join('');
+
+    gridEl.querySelectorAll('.situation-card').forEach(function(card){
+      card.addEventListener('click', function(){
+        if(card.classList.contains('disabled')) return;
+        var id = Number(card.dataset.id);
+        var arr = state[group+'Ids'];
+        var i = arr.indexOf(id);
+        if(i>-1){
+          arr.splice(i,1);
+          delete state[group+'Data'][id];
+        } else {
+          if(arr.length>=2) return;
+          arr.push(id);
+          state[group+'Data'][id] = group==='overcome'
+            ? {usedMuscle:'', reason:'', response:'', wobbleReason:'', recover:''}
+            : {why:'', neededMuscle:'', practice:''};
+        }
+        saveState();
+        renderSituationGrids();
+        renderEntries(group);
+        document.getElementById(group+'Count').textContent = arr.length;
+      });
+    });
+    document.getElementById(group+'Count').textContent = selectedIds.length;
+  }
+
+  function renderEntries(group){
+    var box = document.getElementById(group+'Entries');
+    var ids = state[group+'Ids'];
+    var muscleOptions = state.muscles.filter(Boolean).map(function(name){
+      var m = MUSCLES.filter(function(mm){return mm.name===name;})[0];
+      return {name:name, label: m?muscleLabel(m):name};
+    });
+
+    box.innerHTML = ids.map(function(id){
+      var s = situationById(id);
+      var d = state[group+'Data'][id] || {};
+      if(group==='overcome'){
+        return '<div class="entry-card" data-id="'+id+'" data-group="overcome">'+
+          '<h3>'+s.emoji+' '+s.title+' <button type="button" class="muscle-recap-btn" data-recap>🌟 내 근육</button></h3>'+
+          '<div class="situation-desc-box"><b>이 상황은</b>'+s.desc+'</div>'+
+          '<label class="field-hint">이 상황에서 쓸 근육</label>'+
+          '<select data-field="usedMuscle">'+
+            '<option value="">근육을 선택해주세요</option>'+
+            muscleOptions.map(function(o){return '<option value="'+o.name+'"'+(d.usedMuscle===o.name?' selected':'')+'>'+o.label+'</option>';}).join('')+
+          '</select>'+
+          '<label class="field-hint" style="margin-top:10px;display:block;">이 상황을 고른 이유</label>'+
+          '<textarea data-field="reason" rows="2">'+(d.reason||'')+'</textarea>'+
+          '<label class="field-hint">내 근육을 쓴다면, 나는 어떻게 대응할까요?</label>'+
+          '<textarea data-field="response" rows="2">'+(d.response||'')+'</textarea>'+
+          '<label class="field-hint">그래도 흔들릴 것 같은 이유는?</label>'+
+          '<textarea data-field="wobbleReason" rows="2">'+(d.wobbleReason||'')+'</textarea>'+
+          '<label class="field-hint">흔들릴 때 다시 잡는 방법은?</label>'+
+          '<textarea data-field="recover" rows="2">'+(d.recover||'')+'</textarea>'+
+        '</div>';
+      } else {
+        return '<div class="entry-card" data-id="'+id+'" data-group="struggle">'+
+          '<h3>'+s.emoji+' '+s.title+'</h3>'+
+          '<div class="situation-desc-box"><b>이 상황은</b>'+s.desc+'</div>'+
+          '<label class="field-hint">왜 특히 어렵게 느껴지나요?</label>'+
+          '<textarea data-field="why" rows="2">'+(d.why||'')+'</textarea>'+
+          '<label class="field-hint">추가로 필요한 근육은 무엇일까요? (자유롭게 이름 붙여보세요)</label>'+
+          '<input type="text" data-field="neededMuscle" value="'+(d.neededMuscle||'')+'" placeholder="예: 거절하는 용기">'+
+          '<label class="field-hint">그 근육을 위해 일상에서 해볼 수 있는 실천은?</label>'+
+          '<textarea data-field="practice" rows="2">'+(d.practice||'')+'</textarea>'+
+        '</div>';
+      }
+    }).join('');
+
+    box.querySelectorAll('[data-field]').forEach(function(el){
+      el.addEventListener('input', function(){
+        var card = el.closest('.entry-card');
+        var id = card.dataset.id, g = card.dataset.group;
+        state[g+'Data'][id][el.dataset.field] = el.value;
+        saveState();
+      });
+    });
+    box.querySelectorAll('[data-recap]').forEach(function(btn){
+      btn.addEventListener('click', openMuscleRecap);
+    });
+  }
+
+  /* ================= 근육 다시보기 모달 ================= */
+  function openMuscleRecap(){
+    var list = document.getElementById('recapList');
+    var picked = state.muscles.filter(Boolean).map(function(name){
+      return MUSCLES.filter(function(m){return m.name===name;})[0];
+    });
+    if(picked.length===0){
+      list.innerHTML = '<p>아직 선택한 근육이 없어요. 근육사전 탭에서 먼저 골라주세요!</p>';
+    } else {
+      list.innerHTML = picked.map(function(m,i){
+        return '<div class="objective-item"><span class="objective-num">'+(i+1)+'</span><span class="objective-text">'+m.emoji+' '+muscleLabel(m)+'</span></div>';
+      }).join('');
+    }
+    document.getElementById('muscleRecapModal').hidden = false;
+  }
+  document.getElementById('recapCloseBtn').addEventListener('click', function(){
+    document.getElementById('muscleRecapModal').hidden = true;
+  });
+  document.getElementById('openFullEncyclopediaBtn').addEventListener('click', function(){
+    document.getElementById('muscleRecapModal').hidden = true;
+    document.querySelector('.tab-btn[data-tab="tabMuscle"]').click();
+  });
+
+  /* ================= 근육사용선언 탭 ================= */
+  function renderDeclareMuscleSelect(){
+    var sel = document.getElementById('declareMuscleSelect');
+    var options = state.muscles.filter(Boolean).map(function(name){
+      var m = MUSCLES.filter(function(mm){return mm.name===name;})[0];
+      return {name:name, label:m?muscleLabel(m):name};
+    });
+    sel.innerHTML = '<option value="">선택해주세요</option>' +
+      options.map(function(o){return '<option value="'+o.name+'"'+(state.declare.muscle===o.name && state.declare.muscleMode==='select'?' selected':'')+'>'+o.label+'</option>';}).join('') +
+      '<option value="__custom__"'+(state.declare.muscleMode==='custom'?' selected':'')+'>✏️ 직접 입력</option>';
+    var customInput = document.getElementById('declareMuscleCustom');
+    customInput.hidden = state.declare.muscleMode !== 'custom';
+    customInput.value = state.declare.custom || '';
+
+    sel.onchange = function(){
+      if(sel.value === '__custom__'){
+        state.declare.muscleMode = 'custom';
+        customInput.hidden = false;
+      } else {
+        state.declare.muscleMode = 'select';
+        state.declare.muscle = sel.value;
+        customInput.hidden = true;
+      }
+      saveState();
+      updateDeclarePreview();
+    };
+    customInput.oninput = function(){
+      state.declare.custom = customInput.value;
+      saveState();
+      updateDeclarePreview();
+    };
+  }
+
+  document.getElementById('declareLetter').addEventListener('input', function(){
+    state.declare.letter = this.value; saveState(); updateDeclarePreview();
+  });
+  document.querySelectorAll('.style-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.style-btn').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      state.declare.style = btn.dataset.style;
+      document.getElementById('letterPreview').hidden = state.declare.style !== 'letter';
+      document.getElementById('postitPreview').hidden = state.declare.style !== 'postit';
+      document.getElementById('postitColors').hidden = state.declare.style !== 'postit';
+      saveState();
+    });
+  });
+  document.querySelectorAll('.color-dot').forEach(function(dot){
+    dot.addEventListener('click', function(){
+      document.querySelectorAll('.color-dot').forEach(function(d){d.classList.remove('active');});
+      dot.classList.add('active');
+      state.declare.color = dot.dataset.color;
+      var pp = document.getElementById('postitPreview');
+      pp.className = 'postit-page ' + dot.dataset.color;
+      saveState();
+    });
+  });
+
+  function getDeclareMuscleDisplay(){
+    if(state.declare.muscleMode === 'custom') return state.declare.custom || '';
+    var m = MUSCLES.filter(function(mm){return mm.name===state.declare.muscle;})[0];
+    return m ? muscleLabel(m) : (state.declare.muscle||'');
+  }
+
+  function updateDeclarePreview(){
+    var muscleText = getDeclareMuscleDisplay();
+    var letterText = state.declare.letter || '';
+    var dateStr = new Date().toLocaleDateString('ko-KR');
+    document.getElementById('letterMuscleText').textContent = muscleText;
+    document.getElementById('letterBodyText').textContent = letterText;
+    document.getElementById('letterDate').textContent = dateStr;
+    document.getElementById('letterName').textContent = state.profile ? state.profile.name : '';
+    document.getElementById('postitMuscleText').textContent = muscleText;
+    document.getElementById('postitBodyText').textContent = letterText;
+    document.getElementById('postitDate').textContent = dateStr;
+    document.getElementById('postitName').textContent = state.profile ? state.profile.name : '';
+  }
+
+  /* ================= 친구들 이야기 탭 ================= */
+  function renderFriendsTab(){
+    document.getElementById('friendsSituationSelect').innerHTML = SITUATIONS.map(function(s){
+      return '<option value="'+s.id+'">'+s.emoji+' '+s.title+'</option>';
+    }).join('');
+    if(!state.hasSubmitted){
+      document.getElementById('friendsLockedBox').hidden = false;
+      document.getElementById('friendsUnlockedBox').hidden = true;
+      return;
+    }
+    document.getElementById('friendsLockedBox').hidden = true;
+    document.getElementById('friendsUnlockedBox').hidden = false;
+    loadFriendsStories();
+  }
+  document.getElementById('friendsSituationSelect').addEventListener('change', loadFriendsStories);
+
+  function loadFriendsStories(){
+    var sid = document.getElementById('friendsSituationSelect').value;
+    var list = document.getElementById('friendsList');
+    list.innerHTML = '<p>불러오는 중...</p>';
+    apiGet({action:'getFriendsStories', situationId: sid, requesterId: state.profile.studentId}).then(function(res){
+      if(res.locked){
+        list.innerHTML = '<p>🔒 제출 후 열람 가능해요.</p>';
+        return;
+      }
+      if(!res.entries || res.entries.length===0){
+        list.innerHTML = '<p>아직 이 상황에 대한 친구들의 이야기가 없어요.</p>';
+        return;
+      }
+      list.innerHTML = res.entries.map(function(e){
+        if(e.type==='overcome'){
+          return '<div class="friend-entry"><span class="muscle-tag">'+(e.muscleLabel||'익명')+'</span><span class="type-tag">이겨낸 상황</span>'+
+            '<p><b>이유</b> '+e.reason+'</p><p><b>대응법</b> '+e.response+'</p><p><b>흔들리는 이유</b> '+e.wobbleReason+'</p><p><b>다시 잡는 법</b> '+e.recover+'</p></div>';
+        } else {
+          return '<div class="friend-entry"><span class="muscle-tag">'+(e.muscleLabel||'익명')+'</span><span class="type-tag">흔들린 상황</span>'+
+            '<p><b>왜 어려운지</b> '+e.why+'</p><p><b>필요한 근육</b> '+e.neededMuscle+'</p><p><b>실천</b> '+e.practice+'</p></div>';
+        }
+      }).join('');
+    });
+  }
+
+  function unlockFriendsTab(){
+    document.querySelector('.tab-btn[data-tab="tabFriends"]').classList.remove('locked');
+  }
+
+  /* ================= 제출하기 ================= */
+  document.getElementById('submitBtn').addEventListener('click', function(){
+    var overcome = state.overcomeIds.map(function(id){
+      var s = situationById(id), d = state.overcomeData[id];
+      return {situationId:id, title:s.title, usedMuscle:d.usedMuscle, reason:d.reason, response:d.response, wobbleReason:d.wobbleReason, recover:d.recover};
+    });
+    var struggle = state.struggleIds.map(function(id){
+      var s = situationById(id), d = state.struggleData[id];
+      return {situationId:id, title:s.title, why:d.why, neededMuscle:d.neededMuscle, practice:d.practice};
+    });
+    var payload = {
+      action:'submit',
+      studentId: state.profile.studentId,
+      name: state.profile.name,
+      muscles: state.muscles,
+      overcome: overcome,
+      struggle: struggle,
+      declareMuscle: getDeclareMuscleDisplay(),
+      declareLetter: state.declare.letter
+    };
+    var btn = this;
+    btn.disabled = true; btn.textContent = '제출 중...';
+    apiPost(payload).then(function(res){
+      btn.disabled = false; btn.textContent = '✅ 제출하기';
+      if(res.ok){
+        state.hasSubmitted = true;
+        saveState();
+        unlockFriendsTab();
+        document.getElementById('bannerMsg').textContent = res.overwritten ? '🔄 다시 제출되었어요!' : '🎉 제출이 완료되었어요! 이제 친구들 이야기를 볼 수 있어요.';
+        document.getElementById('resetBanner').hidden = false;
+      } else {
+        alert('제출 중 문제가 생겼어요: ' + (res.error||''));
+      }
+    }).catch(function(){
+      btn.disabled = false; btn.textContent = '✅ 제출하기';
+      alert('서버에 연결할 수 없어요. 네트워크를 확인해주세요.');
+    });
+  });
+  document.getElementById('bannerDismissBtn').addEventListener('click', function(){
+    document.getElementById('resetBanner').hidden = true;
+  });
+
+  /* ================= 이미지 내보내기 ================= */
+  function exportElement(el, filename){
+    html2canvas(el, {backgroundColor:'#FFFBF3', scale:2}).then(function(canvas){
+      var link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  }
+  document.getElementById('situationExportBtn').addEventListener('click', function(){
+    exportElement(document.getElementById('tabSituation'), '상황카드연습.png');
+  });
+  document.getElementById('declareExportBtn').addEventListener('click', function(){
+    var target = state.declare.style==='letter' ? document.getElementById('letterPreview') : document.getElementById('postitPreview');
+    exportElement(target, '근육사용선언.png');
+  });
+
+  /* ================= 초기 렌더 ================= */
+  function renderAll(){
+    renderMusclePicks();
+    renderMuscleList();
+    renderMuscleDependentUI();
+    renderSituationGrids();
+    renderEntries('overcome');
+    renderEntries('struggle');
+    renderDeclareMuscleSelect();
+    updateDeclarePreview();
+  }
+
+  /* ================= 시작 ================= */
+  if(state.profile){
+    enterApp();
+  } else {
+    welcomeModal.hidden = false;
+  }
+
+})();
+</script>
+</body>
+</html>

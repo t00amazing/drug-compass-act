@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마음의 근육 키우기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FFFBF2;
+    --sky:#6EC6E8;
+    --coral:#F2665E;
+    --mustard:#F2B705;
+    --sage:#8FBF9F;
+    --ink:#3A3226;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:var(--paper);
+    font-family:'Nanum Gothic', sans-serif;
+    color:var(--ink);
+    overflow-x:hidden;
+  }
+
+  /* ---------- 배경에 떠다니는 하트 & 반짝임 (그림 속 모티프 재활용) ---------- */
+  .ambient{ position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+  .ambient span{
+    position:absolute; bottom:-40px; opacity:0.55;
+    animation:drift linear infinite;
+    font-size:28px;
+  }
+  @keyframes drift{
+    0%   { transform:translateY(0) rotate(0deg);   opacity:0; }
+    10%  { opacity:0.6; }
+    90%  { opacity:0.5; }
+    100% { transform:translateY(-110vh) rotate(25deg); opacity:0; }
+  }
+
+  .wrap{
+    position:relative; z-index:1;
+    min-height:100vh;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:48px 24px 64px;
+  }
+
+  .eyebrow{
+    font-family:'Gaegu', sans-serif;
+    font-size:20px; color:var(--sage);
+    letter-spacing:0.08em;
+    margin-bottom:4px;
+    opacity:0;
+    animation:fadeUp 0.7s ease-out 0.1s forwards;
+  }
+
+  h1{
+    font-family:'Gaegu', sans-serif;
+    font-weight:700;
+    font-size:clamp(34px, 6vw, 56px);
+    margin:0 0 12px;
+    color:var(--ink);
+    text-align:center;
+    opacity:0;
+    animation:fadeUp 0.7s ease-out 0.25s forwards;
+  }
+  h1 .hl{ color:var(--coral); }
+
+  .subtitle{
+    font-size:17px;
+    color:#7A6F5D;
+    text-align:center;
+    max-width:520px;
+    line-height:1.6;
+    margin-bottom:52px;
+    opacity:0;
+    animation:fadeUp 0.7s ease-out 0.4s forwards;
+  }
+
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(14px); }
+    to  { opacity:1; transform:translateY(0); }
+  }
+
+  /* ---------- 카드 2개 가로 배치 ---------- */
+  .cards{
+    display:flex;
+    flex-direction:row;
+    gap:32px;
+    width:100%;
+    max-width:920px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  .card{
+    flex:1 1 340px;
+    max-width:400px;
+    background:#ffffff;
+    border-radius:28px;
+    padding:28px 26px 32px;
+    text-align:center;
+    box-shadow:0 10px 0 rgba(58,50,38,0.06), 0 18px 40px rgba(58,50,38,0.08);
+    border:3px solid transparent;
+    opacity:0;
+    transform:translateY(24px) scale(0.97);
+    animation:cardIn 0.6s cubic-bezier(.2,.8,.3,1.2) forwards;
+    transition:border-color 0.25s ease, transform 0.25s ease;
+  }
+  .card:nth-child(1){ animation-delay:0.55s; }
+  .card:nth-child(2){ animation-delay:0.75s; }
+
+  @keyframes cardIn{
+    to{ opacity:1; transform:translateY(0) scale(1); }
+  }
+
+  .card:hover{ transform:translateY(-6px); }
+  .card.diag:hover{ border-color:var(--sky); }
+  .card.practice:hover{ border-color:var(--coral); }
+
+  .art-frame{
+    width:100%;
+    aspect-ratio:1/1;
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:18px;
+    background:#F5F1E4;
+  }
+  .art-frame img{
+    width:100%; height:100%; object-fit:cover;
+    display:block;
+    transition:transform 0.4s ease;
+  }
+  .card:hover .art-frame img{ transform:scale(1.06) rotate(-1.5deg); }
+
+  .card h2{
+    font-family:'Gaegu', sans-serif;
+    font-size:24px;
+    margin:0 0 8px;
+  }
+  .card p.desc{
+    font-size:14px;
+    color:#8A7F6C;
+    line-height:1.55;
+    margin:0 0 22px;
+    min-height:44px;
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:100%;
+    padding:15px 20px;
+    border-radius:999px;
+    font-family:'Gaegu', sans-serif;
+    font-size:19px;
+    font-weight:700;
+    text-decoration:none;
+    color:#fff;
+    border:none;
+    cursor:pointer;
+    box-shadow:0 6px 0 rgba(0,0,0,0.12);
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  .btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 9px 0 rgba(0,0,0,0.12);
+  }
+  .btn:active{
+    transform:translateY(2px);
+    box-shadow:0 3px 0 rgba(0,0,0,0.12);
+  }
+  .btn .arrow{ transition:transform 0.2s ease; }
+  .btn:hover .arrow{ transform:translateX(4px); }
+
+  .btn.diag-btn{ background:var(--sky); }
+  .btn.practice-btn{ background:var(--coral); }
+
+  @keyframes pulse{
+    0%,100%{ box-shadow:0 6px 0 rgba(0,0,0,0.12); }
+    50%    { box-shadow:0 6px 0 rgba(0,0,0,0.12), 0 0 0 6px rgba(255,255,255,0.35); }
+  }
+
+  .step-tag{
+    display:inline-block;
+    font-family:'Gaegu', sans-serif;
+    font-size:13px;
+    color:#fff;
+    padding:3px 12px;
+    border-radius:999px;
+    margin-bottom:14px;
+  }
+  .card.diag .step-tag{ background:var(--sky); }
+  .card.practice .step-tag{ background:var(--coral); }
+
+  .footnote{
+    margin-top:40px;
+    font-size:13px;
+    color:#B0A48C;
+    text-align:center;
+    opacity:0;
+    animation:fadeUp 0.7s ease-out 0.95s forwards;
+  }
+
+  @media (max-width:640px){
+    .cards{ flex-direction:column; align-items:center; }
+    .card{ width:100%; max-width:360px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *, .btn, .card, h1, .subtitle, .eyebrow, .footnote{ animation:none !important; }
+    .ambient{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="ambient" id="ambient"></div>
+
+  <div class="wrap">
+    <div class="eyebrow">MIND MUSCLE PROGRAM</div>
+    <h1>나에게도 있는,<br><span class="hl">마음의 근육</span> 키우기</h1>
+    <p class="subtitle">
+      약물·중독으로부터 나를 지키는 힘은 이미 내 안에 있어요.<br>
+      먼저 나의 근육을 찾아보고, 실제 상황에서 써보는 연습까지 해볼까요?
+    </p>
+
+    <div class="cards">
+      <a href="https://t00amazing.github.io/drug-compass/" class="card diag" style="text-decoration:none; color:inherit;">
+        <span class="step-tag">STEP 1</span>
+        <div class="art-frame">
+          <img src="./animals.png" alt="10가지 마음의 근육 캐릭터들">
+        </div>
+        <h2>마음의 근육 진단하기</h2>
+        <p class="desc">10가지 근육 중 나에게 가장 강한 3가지를 찾아보는 자가진단</p>
+        <span class="btn diag-btn">진단하러 가기 <span class="arrow">→</span></span>
+      </a>
+
+      <a href="./practice-app.html" class="card practice" style="text-decoration:none; color:inherit;">
+        <span class="step-tag">STEP 2</span>
+        <div class="art-frame">
+          <img src="./kids.png" alt="함께 하이파이브하는 아이들">
+        </div>
+        <h2>마음의 근육 사용연습하기</h2>
+        <p class="desc">진단받은 나의 근육을 실제 상황에 적용해보는 활동</p>
+        <span class="btn practice-btn">연습하러 가기 <span class="arrow">→</span></span>
+      </a>
+    </div>
+
+    <div class="footnote">진단을 먼저 마친 뒤 연습으로 넘어오면 더 도움이 돼요 🌱</div>
+  </div>
+
+<script>
+  // 배경에 떠다니는 하트 & 반짝임 생성
+  var symbols = ['❤️','✨','💛','🌟'];
+  var ambient = document.getElementById('ambient');
+  var count = window.innerWidth < 640 ? 10 : 18;
+  for (var i = 0; i < count; i++) {
+    var s = document.createElement('span');
+    s.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    s.style.left = Math.random() * 100 + '%';
+    s.style.fontSize = (16 + Math.random() * 20) + 'px';
+    s.style.animationDuration = (9 + Math.random() * 8) + 's';
+    s.style.animationDelay = (Math.random() * 10) + 's';
+    ambient.appendChild(s);
+  }
+</script>
+
+</body>
+</html>
