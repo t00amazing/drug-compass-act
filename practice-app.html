@@ -81,25 +81,25 @@
   .group-label.overcome{ background:var(--blue); }
   .group-label.struggle{ background:var(--pink); }
   .select-limit-msg{ color:#C9556A; font-size:0.85rem; min-height:1.2em; margin:-2px 0 12px; }
-  .situ-columns{ display:flex; gap:20px; align-items:flex-start; }
-  .situ-column{ flex:1 1 0; min-width:0; }
-  @media (max-width:760px){
-    .situ-columns{ flex-direction:column; }
-  }
+  .situ-legend{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+  .legend-chip{ font-family:'Gowun Batang', serif; font-weight:700; font-size:0.92rem; padding:6px 16px; border-radius:999px; }
+  .legend-chip.overcome{ background:var(--blue); }
+  .legend-chip.struggle{ background:var(--pink); }
 
-  .situ-card{ background:var(--card); border-radius:var(--radius-lg); margin-bottom:14px; box-shadow:var(--shadow-sm); border:3px solid transparent; overflow:hidden; transition:border-color .15s ease, transform .1s ease; }
-  .situ-card.disabled{ opacity:.4; }
-  .situ-header{ display:flex; align-items:center; gap:16px; padding:20px; cursor:pointer; }
-  .situ-card.disabled .situ-header{ cursor:not-allowed; }
-  .situ-header:active{ transform:scale(0.99); }
+  .situ-header-row{ display:flex; align-items:center; gap:16px; padding:20px 20px 12px; }
+  .situ-btn-row{ display:flex; gap:10px; padding:0 20px 18px; flex-wrap:wrap; }
+  .situ-choice-btn{ flex:1; min-width:150px; padding:12px 10px; border-radius:999px; font-weight:bold; font-size:0.88rem; border:2px solid #F0E9DD; background:#fff; color:var(--ink-soft); transition:transform .1s ease; }
+  .situ-choice-btn:active{ transform:scale(0.97); }
+  .situ-choice-btn.overcome.active{ background:var(--blue-dark); border-color:var(--blue-dark); color:#4A4340; }
+  .situ-choice-btn.struggle.active{ background:var(--pink-dark); border-color:var(--pink-dark); color:#4A4340; }
+  .situ-choice-btn:disabled{ opacity:.35; cursor:not-allowed; }
+
+  .situ-card{ background:var(--card); border-radius:var(--radius-lg); margin-bottom:14px; box-shadow:var(--shadow-sm); border:3px solid transparent; overflow:hidden; transition:border-color .15s ease; }
   .situ-emoji-big{ font-size:2.3rem; flex-shrink:0; }
   .situ-title-big{ font-family:'Gowun Batang', serif; font-size:1.15rem; font-weight:700; }
   .situ-desc-small{ font-size:0.85rem; color:var(--ink-soft); margin-top:3px; line-height:1.5; }
-  .situ-select-badge{ margin-left:auto; flex-shrink:0; width:38px; height:38px; border-radius:50%; border:3px solid #F0E9DD; background:#fff; display:flex; align-items:center; justify-content:center; font-size:1.1rem; color:transparent; }
-  .situ-card.group-overcome.selected{ border-color:var(--blue-dark); }
-  .situ-card.group-overcome.selected .situ-select-badge{ background:var(--blue-dark); border-color:var(--blue-dark); color:#fff; }
-  .situ-card.group-struggle.selected{ border-color:var(--pink-dark); }
-  .situ-card.group-struggle.selected .situ-select-badge{ background:var(--pink-dark); border-color:var(--pink-dark); color:#fff; }
+  .situ-card.group-overcome{ border-color:var(--blue-dark); }
+  .situ-card.group-struggle{ border-color:var(--pink-dark); }
   .situ-fields{ padding:0 20px 22px; }
   .situ-fields textarea, .situ-fields input[type=text], .situ-fields select{ margin-bottom:12px; }
   .muscle-recap-btn{ background:var(--yellow); border:none; border-radius:999px; font-size:0.78rem; padding:4px 12px; color:var(--ink); font-weight:bold; }
@@ -333,18 +333,12 @@
         <p>내 근육이 실제 상황에서 어떻게 작동하는지, 또 흔들릴 수 있는 지점은 어디인지 스스로 찾을 수 있다.</p>
       </details>
 
-      <div class="situ-columns">
-        <div class="situ-column">
-          <span class="group-label overcome">💪 이겨낼 수 있는 상황 2개</span>
-          <p>카드를 탭하면 바로 선택되고, 그 자리에서 입력할 수 있어요. (<span id="overcomeCount">0</span>/2)</p>
-          <div id="overcomeList"></div>
-        </div>
-        <div class="situ-column">
-          <span class="group-label struggle">🌪️ 흔들릴 수 있는 상황 2개</span>
-          <p>앞에서 고른 상황과는 겹칠 수 없어요. (<span id="struggleCount">0</span>/2)</p>
-          <div id="struggleList"></div>
-        </div>
+      <div class="situ-legend">
+        <span class="legend-chip overcome">💪 이겨낼 수 있는 상황 (<span id="overcomeCount">0</span>/2)</span>
+        <span class="legend-chip struggle">🌪️ 흔들릴 수 있는 상황 (<span id="struggleCount">0</span>/2)</span>
       </div>
+      <p>상황 카드마다 있는 두 버튼 중 하나를 눌러서 "이겨낼 수 있는 상황"인지 "흔들릴 수 있는 상황"인지 선택하고, 그 자리에서 바로 입력할 수 있어요. 하나의 상황은 한쪽에만 넣을 수 있어요.</p>
+      <div id="situationList"></div>
 
       <div class="export-controls">
         <button class="btn-primary" id="situationExportBtn">🖼️ 이미지로 내보내기</button>
@@ -718,7 +712,7 @@
   }
 
   function renderMuscleDependentUI(){
-    renderGroup('overcome');
+    renderSituationList();
     renderDeclareMuscleDisplay();
     var complete = !!state.muscle;
     document.getElementById('musclePickHint').textContent = complete ? '✅ 근육을 선택했어요! 이제 다음 탭으로 넘어갈 수 있어요.' : '⚠️ 근육을 선택해야 다음 탭으로 넘어갈 수 있어요.';
@@ -751,55 +745,66 @@
     }
   }
 
-  function renderGroup(group){
-    var otherGroup = group === 'overcome' ? 'struggle' : 'overcome';
-    var container = document.getElementById(group+'List');
-    var selectedIds = state[group+'Ids'];
-    var otherIds = state[otherGroup+'Ids'];
+  function updateSituationCounts(){
+    document.getElementById('overcomeCount').textContent = state.overcomeIds.length;
+    document.getElementById('struggleCount').textContent = state.struggleIds.length;
+  }
+
+  function renderSituationList(){
+    var container = document.getElementById('situationList');
 
     container.innerHTML = SITUATIONS.map(function(s){
-      var selected = selectedIds.indexOf(s.id) > -1;
-      var disabled = !selected && (otherIds.indexOf(s.id) > -1 || selectedIds.length >= 2);
-      var d = state[group+'Data'][s.id] || {};
-      var fieldsHtml = selected ? buildFieldsHtml(group, d) : '';
-      return '<div class="situ-card group-'+group+(selected?' selected':'')+(disabled?' disabled':'')+'" data-id="'+s.id+'" data-group="'+group+'">'+
-        '<div class="situ-header">'+
+      var inOvercome = state.overcomeIds.indexOf(s.id) > -1;
+      var inStruggle = state.struggleIds.indexOf(s.id) > -1;
+      var group = inOvercome ? 'overcome' : (inStruggle ? 'struggle' : '');
+      var overcomeDisabled = !inOvercome && state.overcomeIds.length >= 2;
+      var struggleDisabled = !inStruggle && state.struggleIds.length >= 2;
+      var fieldsHtml = group ? buildFieldsHtml(group, state[group+'Data'][s.id] || {}) : '';
+
+      return '<div class="situ-card'+(group?' group-'+group:'')+'" data-id="'+s.id+'" data-group="'+group+'">'+
+        '<div class="situ-header-row">'+
           '<span class="situ-emoji-big">'+s.emoji+'</span>'+
           '<div><div class="situ-title-big">'+s.title+'</div><div class="situ-desc-small">'+s.desc+'</div></div>'+
-          '<span class="situ-select-badge">✓</span>'+
         '</div>'+
-        (selected ? '<div class="situ-fields">'+fieldsHtml+
-          '<button type="button" class="btn-secondary situ-export-btn" data-export-id="'+s.id+'" data-export-group="'+group+'">🖼️ 이 카드 이미지로 저장</button>'+
+        '<div class="situ-btn-row">'+
+          '<button type="button" class="situ-choice-btn overcome'+(inOvercome?' active':'')+'" data-choice="overcome" data-id="'+s.id+'"'+(overcomeDisabled?' disabled':'')+'>💪 이겨낼 상황으로 선택'+(inOvercome?' ✓':'')+'</button>'+
+          '<button type="button" class="situ-choice-btn struggle'+(inStruggle?' active':'')+'" data-choice="struggle" data-id="'+s.id+'"'+(struggleDisabled?' disabled':'')+'>🌪️ 흔들릴 상황으로 선택'+(inStruggle?' ✓':'')+'</button>'+
+        '</div>'+
+        (group ? '<div class="situ-fields">'+fieldsHtml+
+          '<button type="button" class="btn-secondary situ-export-btn" data-export-id="'+s.id+'">🖼️ 이 카드 이미지로 저장</button>'+
         '</div>' : '') +
       '</div>';
     }).join('');
 
-    container.querySelectorAll('.situ-header').forEach(function(header){
-      header.addEventListener('click', function(){
-        var card = header.closest('.situ-card');
-        if(card.classList.contains('disabled')) return;
-        var id = Number(card.dataset.id);
-        var arr = state[group+'Ids'];
-        var i = arr.indexOf(id);
-        if(i>-1){
-          arr.splice(i,1);
-          delete state[group+'Data'][id];
+    container.querySelectorAll('.situ-choice-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = Number(btn.dataset.id);
+        var choice = btn.dataset.choice;
+        var otherGroup = choice === 'overcome' ? 'struggle' : 'overcome';
+        var alreadyInThis = state[choice+'Ids'].indexOf(id) > -1;
+        var alreadyInOther = state[otherGroup+'Ids'].indexOf(id) > -1;
+
+        if(alreadyInThis){
+          state[choice+'Ids'].splice(state[choice+'Ids'].indexOf(id), 1);
+          delete state[choice+'Data'][id];
         } else {
-          if(arr.length>=2) return;
-          arr.push(id);
-          state[group+'Data'][id] = group==='overcome'
-            ? {reason: '', response: '', wobbleReason: '', recover: ''}
+          if(state[choice+'Ids'].length >= 2) return;
+          if(alreadyInOther){
+            state[otherGroup+'Ids'].splice(state[otherGroup+'Ids'].indexOf(id), 1);
+            delete state[otherGroup+'Data'][id];
+          }
+          state[choice+'Ids'].push(id);
+          state[choice+'Data'][id] = choice === 'overcome'
+            ? {reason:'', response:'', wobbleReason:'', recover:''}
             : {why:'', neededMuscle:'', practice:''};
         }
         saveState();
-        renderGroup(group);
-        renderGroup(otherGroup);
-        document.getElementById(group+'Count').textContent = arr.length;
+        renderSituationList();
+        updateSituationCounts();
       });
     });
 
     container.querySelectorAll('[data-field]').forEach(function(el){
-      el.addEventListener('click', function(e){ e.stopPropagation(); });
       el.addEventListener('input', function(){
         var card = el.closest('.situ-card');
         var id = card.dataset.id, g = card.dataset.group;
@@ -808,15 +813,14 @@
       });
     });
     container.querySelectorAll('.situ-export-btn').forEach(function(btn){
-      btn.addEventListener('click', function(e){
-        e.stopPropagation();
+      btn.addEventListener('click', function(){
         var card = btn.closest('.situ-card');
         var s = situationById(btn.dataset.exportId);
         exportElement(card, s.title + '.png');
       });
     });
 
-    document.getElementById(group+'Count').textContent = selectedIds.length;
+    updateSituationCounts();
   }
 
   /* ================= 근육사용선언 탭 ================= */
@@ -1088,8 +1092,7 @@
     renderMusclePicks();
     renderMuscleList();
     renderMuscleDependentUI();
-    renderGroup('overcome');
-    renderGroup('struggle');
+    renderSituationList();
     renderDeclareMuscleDisplay();
     updateDeclarePreview();
   }
