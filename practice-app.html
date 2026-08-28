@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>🌱 마음의 근육 사용 설명서</title>
+<title>🌱 마음의 근육 사용 연습하기</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -81,6 +81,11 @@
   .group-label.overcome{ background:var(--blue); }
   .group-label.struggle{ background:var(--pink); }
   .select-limit-msg{ color:#C9556A; font-size:0.85rem; min-height:1.2em; margin:-2px 0 12px; }
+  .situ-columns{ display:flex; gap:20px; align-items:flex-start; }
+  .situ-column{ flex:1 1 0; min-width:0; }
+  @media (max-width:760px){
+    .situ-columns{ flex-direction:column; }
+  }
 
   .situ-card{ background:var(--card); border-radius:var(--radius-lg); margin-bottom:14px; box-shadow:var(--shadow-sm); border:3px solid transparent; overflow:hidden; transition:border-color .15s ease, transform .1s ease; }
   .situ-card.disabled{ opacity:.4; }
@@ -181,6 +186,21 @@
   .friend-entry .muscle-tag{ display:inline-block; background:var(--blue); border-radius:999px; padding:3px 14px; font-size:0.85rem; font-weight:bold; margin-bottom:8px; }
   .friend-entry .type-tag{ font-size:0.75rem; color:var(--ink-soft); margin-left:6px; }
 
+  /* ---------- 내 활동 보기 (발표 화면 스타일) ---------- */
+  .present-card{ background:var(--card); border-radius:var(--radius-lg); box-shadow:var(--shadow); overflow:hidden; margin-bottom:20px; }
+  .present-header{ background:linear-gradient(135deg, var(--blue), var(--pink)); padding:28px 30px; }
+  .present-header h2{ margin:0 0 4px; font-size:1.6rem; }
+  .present-header .present-sub{ font-size:0.95rem; color:var(--ink); opacity:0.75; }
+  .present-body{ padding:26px 30px; }
+  .present-section{ margin-bottom:26px; }
+  .present-section:last-child{ margin-bottom:0; }
+  .present-section-title{ display:flex; align-items:center; gap:10px; font-family:'Gowun Batang', serif; font-size:1.15rem; font-weight:700; margin-bottom:14px; padding-bottom:8px; border-bottom:2px solid #F3EDE0; }
+  .present-situ{ background:#FFFDF8; border-radius:var(--radius-md); padding:16px 20px; margin-bottom:14px; border:2px solid #F3EDE0; }
+  .present-situ-title{ font-weight:bold; font-size:1.05rem; margin-bottom:8px; }
+  .present-qa{ margin-bottom:8px; font-size:0.95rem; line-height:1.6; }
+  .present-qa b{ display:block; color:var(--ink-soft); font-size:0.82rem; margin-bottom:2px; font-weight:bold; }
+  .present-letter{ background:#FFFDF6; border-radius:var(--radius-md); padding:24px; font-family:'Gowun Batang', serif; font-size:1.1rem; white-space:pre-wrap; line-height:1.8; background-image:repeating-linear-gradient(#FFFDF6 0px, #FFFDF6 34px, #F3ECDD 35px); }
+
   [hidden]{ display:none !important; }
 
   /* ---------- 배경 떠다니는 하트 & 반짝임 ---------- */
@@ -226,7 +246,7 @@
     <div style="text-align:right; margin-bottom:6px;">
       <a href="./index.html" class="btn-secondary">🏠 홈으로</a>
     </div>
-    <h1>🌱 마음의 근육 사용 설명서</h1>
+    <h1>🌱 마음의 근육 사용 연습하기</h1>
     <p class="subtitle">청소년 약물 오남용 예방 · 중독 예방을 위한 자기이해 활동이에요.</p>
 
     <a class="diag-link-btn" href="https://t00amazing.github.io/drug-compass/" target="_blank" rel="noopener">
@@ -267,13 +287,14 @@
     <div class="brand">
       <span class="brand-emoji">🌱</span>
       <div>
-        <h1>마음의 근육 사용 설명서</h1>
+        <h1>마음의 근육 사용 연습하기</h1>
         <p class="app-tagline">청소년 약물 오남용·중독 예방 자기이해 활동</p>
       </div>
     </div>
     <div class="profile-chip">
       <span id="profileChipText">-</span>
       <a href="./index.html" class="btn-secondary" style="padding:8px 14px; font-size:0.85rem;">🏠 홈으로</a>
+      <button class="btn-secondary" id="restartBtn" style="padding:8px 14px; font-size:0.85rem;">🔄 처음 화면</button>
       <button class="btn-submit" id="submitBtn">✅ 제출하기</button>
     </div>
   </header>
@@ -283,6 +304,7 @@
     <button class="tab-btn locked" data-tab="tabSituation">🃏 상황 카드연습</button>
     <button class="tab-btn locked" data-tab="tabDeclare">💌 근육 사용 선언</button>
     <button class="tab-btn locked" data-tab="tabFriends">👥 친구들 이야기</button>
+    <button class="tab-btn locked" data-tab="tabMyRecord">📄 내 활동 보기</button>
   </nav>
 
   <main>
@@ -311,15 +333,18 @@
         <p>내 근육이 실제 상황에서 어떻게 작동하는지, 또 흔들릴 수 있는 지점은 어디인지 스스로 찾을 수 있다.</p>
       </details>
 
-      <span class="group-label overcome">💪 이겨낼 수 있는 상황 2개</span>
-      <p>카드를 탭하면 바로 선택되고, 그 자리에서 입력할 수 있어요. (<span id="overcomeCount">0</span>/2)</p>
-      <div class="select-limit-msg"></div>
-      <div id="overcomeList"></div>
-
-      <span class="group-label struggle">🌪️ 흔들릴 수 있는 상황 2개</span>
-      <p>앞에서 고른 상황과는 겹칠 수 없어요. (<span id="struggleCount">0</span>/2)</p>
-      <div class="select-limit-msg"></div>
-      <div id="struggleList"></div>
+      <div class="situ-columns">
+        <div class="situ-column">
+          <span class="group-label overcome">💪 이겨낼 수 있는 상황 2개</span>
+          <p>카드를 탭하면 바로 선택되고, 그 자리에서 입력할 수 있어요. (<span id="overcomeCount">0</span>/2)</p>
+          <div id="overcomeList"></div>
+        </div>
+        <div class="situ-column">
+          <span class="group-label struggle">🌪️ 흔들릴 수 있는 상황 2개</span>
+          <p>앞에서 고른 상황과는 겹칠 수 없어요. (<span id="struggleCount">0</span>/2)</p>
+          <div id="struggleList"></div>
+        </div>
+      </div>
 
       <div class="export-controls">
         <button class="btn-primary" id="situationExportBtn">🖼️ 이미지로 내보내기</button>
@@ -389,6 +414,18 @@
       </div>
     </section>
 
+    <!-- ---------- TAB: 내 활동 보기 (발표용 조회/수정) ---------- -->
+    <section id="tabMyRecord" class="tab-panel">
+      <h2>📄 내 활동 보기</h2>
+      <p>제출한 내용을 발표 화면처럼 깔끔하게 볼 수 있어요. 수정하고 싶으면 아래 "✏️ 수정하기"를 눌러주세요.</p>
+      <div id="myRecordLoading"><p>불러오는 중...</p></div>
+      <div id="myRecordView" hidden></div>
+      <div id="myRecordActions" hidden style="text-align:center; margin-top:20px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn-secondary" id="editMyRecordBtn">✏️ 수정하기</button>
+        <button class="btn-primary" id="exportMyRecordBtn">🖼️ 발표 화면 이미지로 저장</button>
+      </div>
+    </section>
+
     <div style="text-align:center; margin-top:30px;">
       <a href="./index.html" class="btn-secondary">🏠 홈으로 돌아가기</a>
     </div>
@@ -399,6 +436,7 @@
   <span id="bannerMsg">🎉 제출이 완료되었어요!</span>
   <div class="banner-actions">
     <button class="btn-secondary" id="bannerDismissBtn">닫기</button>
+    <button class="btn-primary" id="bannerRestartBtn">처음 화면으로</button>
   </div>
 </div>
 
@@ -626,8 +664,9 @@
         state.hasSubmitted = !res.locked;
         saveState();
         var friendsTab = document.querySelector('.tab-btn[data-tab="tabFriends"]');
-        if(state.hasSubmitted){ friendsTab.classList.remove('locked'); }
-        else { friendsTab.classList.add('locked'); }
+        var myRecordTab = document.querySelector('.tab-btn[data-tab="tabMyRecord"]');
+        if(state.hasSubmitted){ friendsTab.classList.remove('locked'); myRecordTab.classList.remove('locked'); }
+        else { friendsTab.classList.add('locked'); myRecordTab.classList.add('locked'); }
       }
     }).catch(function(){ /* 네트워크 문제면 기존 로컬 상태 유지 */ });
   }
@@ -636,10 +675,10 @@
   document.querySelectorAll('.tab-btn').forEach(function(btn){
     btn.addEventListener('click', function(){
       if(btn.classList.contains('locked')){
-        if(btn.dataset.tab === 'tabFriends'){
-          alert('🔒 먼저 활동을 마치고 제출하기를 눌러야 친구들 이야기를 볼 수 있어요.');
+        if(btn.dataset.tab === 'tabFriends' || btn.dataset.tab === 'tabMyRecord'){
+          alert('🔒 먼저 활동을 마치고 제출하기를 눌러야 볼 수 있어요.');
         } else {
-          alert('🔒 근육사전에서 나의 근육 3가지를 모두 선택해야 다음으로 넘어갈 수 있어요.');
+          alert('🔒 근육사전에서 나의 근육을 선택해야 다음으로 넘어갈 수 있어요.');
         }
         return;
       }
@@ -648,6 +687,7 @@
       btn.classList.add('active');
       document.getElementById(btn.dataset.tab).classList.add('active');
       if(btn.dataset.tab === 'tabFriends'){ renderFriendsTab(); }
+      if(btn.dataset.tab === 'tabMyRecord'){ renderMyRecordTab(); }
     });
   });
 
@@ -728,7 +768,9 @@
           '<div><div class="situ-title-big">'+s.title+'</div><div class="situ-desc-small">'+s.desc+'</div></div>'+
           '<span class="situ-select-badge">✓</span>'+
         '</div>'+
-        (selected ? '<div class="situ-fields">'+fieldsHtml+'</div>' : '') +
+        (selected ? '<div class="situ-fields">'+fieldsHtml+
+          '<button type="button" class="btn-secondary situ-export-btn" data-export-id="'+s.id+'" data-export-group="'+group+'">🖼️ 이 카드 이미지로 저장</button>'+
+        '</div>' : '') +
       '</div>';
     }).join('');
 
@@ -765,6 +807,15 @@
         saveState();
       });
     });
+    container.querySelectorAll('.situ-export-btn').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        var card = btn.closest('.situ-card');
+        var s = situationById(btn.dataset.exportId);
+        exportElement(card, s.title + '.png');
+      });
+    });
+
     document.getElementById(group+'Count').textContent = selectedIds.length;
   }
 
@@ -842,6 +893,7 @@
       if(res.locked){
         state.hasSubmitted = false; saveState();
         document.querySelector('.tab-btn[data-tab="tabFriends"]').classList.add('locked');
+        document.querySelector('.tab-btn[data-tab="tabMyRecord"]').classList.add('locked');
         document.getElementById('friendsLockedBox').hidden = false;
         document.getElementById('friendsUnlockedBox').hidden = true;
         return;
@@ -864,7 +916,105 @@
 
   function unlockFriendsTab(){
     document.querySelector('.tab-btn[data-tab="tabFriends"]').classList.remove('locked');
+    document.querySelector('.tab-btn[data-tab="tabMyRecord"]').classList.remove('locked');
   }
+
+  /* ================= 내 활동 보기 (발표용 조회/수정) ================= */
+  var myRecordServerData = null;
+
+  function val(d, key){ return (d && d[key] !== undefined && d[key] !== null) ? d[key] : ''; }
+
+  function renderMyRecordTab(){
+    var loading = document.getElementById('myRecordLoading');
+    var view = document.getElementById('myRecordView');
+    var actions = document.getElementById('myRecordActions');
+    loading.hidden = false; view.hidden = true; actions.hidden = true;
+
+    apiGet({action:'getMySubmission', studentId: state.profile.studentId}).then(function(res){
+      loading.hidden = true;
+      if(!res.found){
+        view.hidden = false;
+        view.innerHTML = '<p>아직 제출된 내용이 없어요.</p>';
+        return;
+      }
+      myRecordServerData = res.data;
+      var d = res.data;
+      var muscleName = val(d,'선택근육1순위');
+      var mObj = MUSCLES.filter(function(m){return m.name===muscleName;})[0];
+
+      function situBlock(prefix, n, fields){
+        return '<div class="present-situ"><div class="present-situ-title">'+val(d, prefix+n+'_제목')+'</div>'+
+          fields.map(function(f){ return '<div class="present-qa"><b>'+f.label+'</b>'+val(d, prefix+n+'_'+f.key)+'</div>'; }).join('') +
+        '</div>';
+      }
+
+      view.hidden = false;
+      actions.hidden = false;
+      view.innerHTML = '<div class="present-card" id="presentCardInner">'+
+        '<div class="present-header"><h2>'+val(d,'이름')+'님의 마음의 근육 활동</h2><div class="present-sub">나의 근육: 🌟 '+(mObj?muscleLabel(mObj):muscleName)+'</div></div>'+
+        '<div class="present-body">'+
+          '<div class="present-section"><div class="present-section-title">💪 이겨낼 수 있는 상황</div>'+
+            situBlock('이겨낸상황',1,[{label:'이유',key:'이유'},{label:'대응법',key:'대응법'},{label:'흔들리는 이유',key:'흔들리는이유'},{label:'다시 잡는 법',key:'다시잡는법'}]) +
+            situBlock('이겨낸상황',2,[{label:'이유',key:'이유'},{label:'대응법',key:'대응법'},{label:'흔들리는 이유',key:'흔들리는이유'},{label:'다시 잡는 법',key:'다시잡는법'}]) +
+          '</div>'+
+          '<div class="present-section"><div class="present-section-title">🌪️ 흔들릴 수 있는 상황</div>'+
+            situBlock('흔들린상황',1,[{label:'왜 어려운지',key:'왜어려운지'},{label:'필요한 근육',key:'필요근육'},{label:'실천',key:'실천'}]) +
+            situBlock('흔들린상황',2,[{label:'왜 어려운지',key:'왜어려운지'},{label:'필요한 근육',key:'필요근육'},{label:'실천',key:'실천'}]) +
+          '</div>'+
+          '<div class="present-section"><div class="present-section-title">💌 근육 사용 선언</div>'+
+            '<div class="present-letter">나의 근육: '+val(d,'선언근육')+'\n\n'+val(d,'선언편지내용')+'</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    }).catch(function(){
+      loading.hidden = true;
+      view.hidden = false;
+      view.innerHTML = '<p>⚠️ 서버에 연결할 수 없어요. 네트워크를 확인해주세요.</p>';
+    });
+  }
+
+  function loadServerDataIntoState(d){
+    state.muscle = val(d,'선택근육1순위');
+    state.overcomeIds = [];
+    state.overcomeData = {};
+    [1,2].forEach(function(n){
+      var id = Number(val(d,'이겨낸상황'+n+'_ID'));
+      if(id){
+        state.overcomeIds.push(id);
+        state.overcomeData[id] = {
+          reason: val(d,'이겨낸상황'+n+'_이유'), response: val(d,'이겨낸상황'+n+'_대응법'),
+          wobbleReason: val(d,'이겨낸상황'+n+'_흔들리는이유'), recover: val(d,'이겨낸상황'+n+'_다시잡는법')
+        };
+      }
+    });
+    state.struggleIds = [];
+    state.struggleData = {};
+    [1,2].forEach(function(n){
+      var id = Number(val(d,'흔들린상황'+n+'_ID'));
+      if(id){
+        state.struggleIds.push(id);
+        state.struggleData[id] = {
+          why: val(d,'흔들린상황'+n+'_왜어려운지'), neededMuscle: val(d,'흔들린상황'+n+'_필요근육'), practice: val(d,'흔들린상황'+n+'_실천')
+        };
+      }
+    });
+    state.declare.letter = val(d,'선언편지내용');
+    saveState();
+    renderAll();
+  }
+
+  document.getElementById('editMyRecordBtn').addEventListener('click', function(){
+    if(!myRecordServerData){ return; }
+    loadServerDataIntoState(myRecordServerData);
+    document.querySelector('.tab-btn[data-tab="tabMuscle"]').click();
+    alert('제출했던 내용을 불러왔어요. 수정한 뒤 다시 "제출하기"를 눌러야 저장돼요.');
+  });
+
+  document.getElementById('exportMyRecordBtn').addEventListener('click', function(){
+    var el = document.getElementById('presentCardInner');
+    if(!el) return;
+    exportElement(el, (state.profile.name || '학생') + '_마음의근육_발표화면.png');
+  });
 
   /* ================= 제출하기 ================= */
   document.getElementById('submitBtn').addEventListener('click', function(){
@@ -907,6 +1057,14 @@
   document.getElementById('bannerDismissBtn').addEventListener('click', function(){
     document.getElementById('resetBanner').hidden = true;
   });
+
+  function resetToWelcome(){
+    if(!confirm('처음 화면으로 돌아갈까요? 지금까지 작성한 내용은 이 기기에서 삭제돼요. (이미 제출한 내용은 구글시트에 안전하게 남아있어요)')) return;
+    localStorage.removeItem(LS_KEY);
+    location.reload();
+  }
+  document.getElementById('restartBtn').addEventListener('click', resetToWelcome);
+  document.getElementById('bannerRestartBtn').addEventListener('click', resetToWelcome);
 
   /* ================= 이미지 내보내기 ================= */
   function exportElement(el, filename){
