@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔐 마음의 근육 관리자 페이지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --yellow:#FFF3C9; --yellow-dark:#FFD873;
+    --pink:#FFE1EC; --pink-dark:#FFA9C4;
+    --blue:#DCEFFF; --blue-dark:#8FC7F0;
+    --ink:#4A4340; --ink-soft:#96897E;
+    --bg:#FFFDF8; --card:#FFFFFF;
+    --radius-lg:26px; --radius-md:18px; --radius-sm:12px;
+    --shadow:0 10px 24px rgba(74,67,64,0.10);
+    --shadow-sm:0 4px 10px rgba(74,67,64,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{ background:var(--bg); color:var(--ink); font-family:'Gowun Dodum', sans-serif; line-height:1.6; padding-bottom:60px; }
+  h1,h2,h3{ font-family:'Gowun Batang', serif; font-weight:700; margin:0 0 8px; }
+  h1{ font-size:1.5rem; } h2{ font-size:1.25rem; } h3{ font-size:1.05rem; }
+  button{ font-family:inherit; cursor:pointer; }
+  input, select, textarea{ font-family:inherit; font-size:0.95rem; border:2px solid #F0E9DD; border-radius:var(--radius-sm); padding:9px 12px; background:#FFFEFC; color:var(--ink); }
+  input:focus, select:focus{ outline:none; border-color:var(--blue-dark); box-shadow:0 0 0 3px rgba(143,199,240,0.28); }
+
+  .btn-primary{ background:var(--blue-dark); color:#4A4340; border:none; border-radius:999px; padding:11px 22px; font-family:'Gowun Batang', serif; font-weight:700; box-shadow:0 5px 0 rgba(0,0,0,0.08); transition:transform .15s ease; }
+  .btn-primary:hover{ transform:translateY(-2px); }
+  .btn-secondary{ background:#fff; color:var(--ink); border:2px solid #F0E9DD; border-radius:999px; padding:8px 16px; font-weight:bold; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+  .btn-danger{ background:var(--pink-dark); color:#4A4340; border:none; border-radius:999px; padding:7px 14px; font-weight:bold; font-size:0.85rem; }
+  .btn-small{ padding:6px 12px; font-size:0.85rem; border-radius:999px; border:2px solid #F0E9DD; background:#fff; font-weight:bold; }
+
+  .wrap{ max-width:960px; margin:0 auto; padding:24px 16px; }
+  header.topbar{ display:flex; align-items:center; justify-content:space-between; max-width:960px; margin:0 auto; padding:16px; gap:12px; flex-wrap:wrap; }
+  nav.tabs{ display:flex; gap:8px; max-width:960px; margin:0 auto 16px; padding:0 16px; overflow-x:auto; }
+  .tab-btn{ flex:1; white-space:nowrap; background:#fff; border:2px solid #F0E9DD; border-radius:999px; padding:10px 14px; font-size:0.9rem; font-weight:bold; color:var(--ink-soft); font-family:'Gowun Batang', serif; }
+  .tab-btn.active{ background:var(--blue); border-color:var(--blue-dark); color:var(--ink); }
+  main{ max-width:960px; margin:0 auto; padding:0 16px 40px; }
+  .tab-panel{ display:none; } .tab-panel.active{ display:block; }
+
+  .card-box{ background:var(--card); border-radius:var(--radius-md); padding:20px; box-shadow:var(--shadow-sm); margin-bottom:18px; }
+  .filter-row{ display:flex; gap:10px; align-items:center; margin-bottom:16px; flex-wrap:wrap; }
+
+  table.data-table{ width:100%; border-collapse:collapse; font-size:0.92rem; }
+  table.data-table th, table.data-table td{ text-align:left; padding:10px 8px; border-bottom:1px solid #F3EDE0; }
+  table.data-table th{ color:var(--ink-soft); font-size:0.82rem; font-weight:bold; }
+  .badge{ display:inline-block; border-radius:999px; padding:2px 10px; font-size:0.8rem; font-weight:bold; }
+  .badge.ok{ background:var(--blue); }
+  .badge.no{ background:var(--pink); color:#a04a5f; }
+  .roster-input{ width:70px; }
+  .roster-input.name{ width:100px; }
+
+  #loginScreen{ max-width:420px; margin:80px auto; text-align:center; }
+  #loginScreen input{ width:100%; margin:16px 0; }
+  #loginError{ color:#C9556A; font-size:0.9rem; min-height:1.2em; }
+
+  .add-form{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:14px; padding-top:14px; border-top:2px dashed #F0E9DD; }
+
+  /* ---------- 발표 화면 스타일 (학생 활동 보기, practice-app과 동일 톤) ---------- */
+  .present-card{ background:var(--card); border-radius:var(--radius-lg); box-shadow:var(--shadow); overflow:hidden; margin-top:18px; }
+  .present-header{ background:linear-gradient(135deg, var(--blue), var(--pink)); padding:26px 28px; }
+  .present-header h2{ margin:0 0 4px; font-size:1.5rem; }
+  .present-header .present-sub{ font-size:0.92rem; color:var(--ink); opacity:0.75; }
+  .present-body{ padding:24px 28px; }
+  .present-section{ margin-bottom:24px; }
+  .present-section:last-child{ margin-bottom:0; }
+  .present-section-title{ display:flex; align-items:center; gap:10px; font-family:'Gowun Batang', serif; font-size:1.1rem; font-weight:700; margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid #F3EDE0; }
+  .present-situ{ background:#FFFDF8; border-radius:var(--radius-md); padding:14px 18px; margin-bottom:12px; border:2px solid #F3EDE0; }
+  .present-situ-title{ font-weight:bold; margin-bottom:6px; }
+  .present-qa{ margin-bottom:6px; font-size:0.92rem; line-height:1.6; }
+  .present-qa b{ display:block; color:var(--ink-soft); font-size:0.8rem; margin-bottom:2px; }
+  .present-letter{ background:#FFFDF6; border-radius:var(--radius-md); padding:22px; font-family:'Gowun Batang', serif; font-size:1.05rem; white-space:pre-wrap; line-height:1.8; background-image:repeating-linear-gradient(#FFFDF6 0px, #FFFDF6 34px, #F3ECDD 35px); }
+
+  .friend-entry{ background:#FFFDF8; border-radius:var(--radius-md); padding:14px 18px; margin-bottom:10px; border:2px solid #F3EDE0; }
+  .friend-entry .who{ font-weight:bold; margin-bottom:6px; }
+  .friend-entry .type-tag{ font-size:0.75rem; color:var(--ink-soft); margin-left:6px; }
+
+  [hidden]{ display:none !important; }
+</style>
+</head>
+<body>
+
+<!-- ===================== 로그인 화면 ===================== -->
+<div id="loginScreen">
+  <h1>🔐 마음의 근육 관리자 페이지</h1>
+  <p style="color:var(--ink-soft);">비밀번호를 입력해주세요.</p>
+  <input type="password" id="adminPasswordInput" placeholder="관리자 비밀번호">
+  <div id="loginError"></div>
+  <button class="btn-primary" id="adminLoginBtn" style="width:100%; margin-top:10px;">로그인</button>
+  <div style="margin-top:20px;"><a href="./index.html" class="btn-secondary">🏠 홈으로</a></div>
+</div>
+
+<!-- ===================== 관리자 앱 ===================== -->
+<div id="adminApp" hidden>
+  <header class="topbar">
+    <h1>🔐 마음의 근육 관리자 페이지</h1>
+    <div style="display:flex; gap:8px;">
+      <a href="./index.html" class="btn-secondary">🏠 홈으로</a>
+      <button class="btn-secondary" id="logoutBtn">🔓 로그아웃</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="tabStatus">📊 제출현황</button>
+    <button class="tab-btn" data-tab="tabRoster">📋 명렬표 관리</button>
+    <button class="tab-btn" data-tab="tabStudentView">📄 학생 활동 보기</button>
+    <button class="tab-btn" data-tab="tabSituationView">🃏 상황별 조회</button>
+  </nav>
+
+  <main>
+    <!-- ---------- 제출현황 ---------- -->
+    <section id="tabStatus" class="tab-panel active">
+      <div class="card-box">
+        <div class="filter-row">
+          <label>반 필터: <select id="statusClassFilter"><option value="">전체</option></select></label>
+          <button class="btn-small" id="refreshStatusBtn">🔄 새로고침</button>
+          <span id="statusSummary" style="margin-left:auto; font-weight:bold;"></span>
+        </div>
+        <div id="statusTableWrap"><p>불러오는 중...</p></div>
+      </div>
+    </section>
+
+    <!-- ---------- 명렬표 관리 ---------- -->
+    <section id="tabRoster" class="tab-panel">
+      <div class="card-box">
+        <h2>명렬표</h2>
+        <div id="rosterTableWrap"><p>불러오는 중...</p></div>
+        <div class="add-form">
+          <input type="text" id="newGrade" placeholder="학년" class="roster-input">
+          <input type="text" id="newClass" placeholder="반" class="roster-input">
+          <input type="text" id="newNumber" placeholder="번호" class="roster-input">
+          <input type="text" id="newName" placeholder="이름" class="roster-input name">
+          <button class="btn-primary" id="addRosterBtn">➕ 추가</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 학생 활동 보기 ---------- -->
+    <section id="tabStudentView" class="tab-panel">
+      <div class="card-box">
+        <h2>📄 학생 활동 보기</h2>
+        <p style="color:var(--ink-soft);">학생을 선택하면 발표 화면처럼 정리된 활동 내용을 볼 수 있어요.</p>
+        <div class="filter-row">
+          <select id="studentViewSelect" style="flex:1; min-width:220px;"><option value="">학생을 선택해주세요</option></select>
+          <button class="btn-small" id="exportStudentViewBtn">🖼️ 이미지로 저장</button>
+        </div>
+        <div id="studentViewBox"></div>
+      </div>
+    </section>
+
+    <!-- ---------- 상황별 조회 ---------- -->
+    <section id="tabSituationView" class="tab-panel">
+      <div class="card-box">
+        <h2>🃏 상황별 조회 (실명)</h2>
+        <div class="filter-row">
+          <select id="situationViewSelect" style="flex:1; min-width:220px;"></select>
+        </div>
+        <div id="situationViewBox"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ⚠️ 배포한 GAS 웹앱 URL을 여기에 넣어주세요 (practice-app.html과 동일한 URL)
+  var SCRIPT_URL = 'PASTE_YOUR_GAS_WEBAPP_URL_HERE';
+
+  var SITUATIONS = [
+    {id:1, emoji:'🚬', title:'한 개비만'},
+    {id:2, emoji:'🍺', title:'분위기 때문에'},
+    {id:3, emoji:'📱', title:'숏폼의 늪'},
+    {id:4, emoji:'☕', title:'카페인으로 버티기'},
+    {id:5, emoji:'💉', title:'공부 잘하는 친구의 비결'},
+    {id:6, emoji:'💊', title:'완벽한 몸을 약속하는 것들'},
+    {id:7, emoji:'😰', title:'불안을 없애주는 영상'},
+    {id:8, emoji:'❤️', title:'좋아요의 중독'},
+    {id:9, emoji:'🎮', title:'게임 보상의 함정'},
+    {id:10, emoji:'⚠️', title:'딱 한 번만 해보면'}
+  ];
+
+  var adminPassword = sessionStorage.getItem('mgs_admin_pw') || '';
+
+  function apiGet(params){
+    var qs = Object.keys(params).map(function(k){ return k+'='+encodeURIComponent(params[k]); }).join('&');
+    return fetch(SCRIPT_URL + '?' + qs).then(function(r){ return r.json(); });
+  }
+  function apiPost(body){
+    return fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body) })
+      .then(function(r){ return r.json(); });
+  }
+  function val(d,key){ return (d && d[key]!==undefined && d[key]!==null) ? d[key] : ''; }
+
+  /* ================= 로그인 ================= */
+  function tryLogin(pw){
+    var err = document.getElementById('loginError');
+    err.textContent = '';
+    apiPost({action:'adminLogin', password: pw}).then(function(res){
+      if(res.ok){
+        adminPassword = pw;
+        sessionStorage.setItem('mgs_admin_pw', pw);
+        document.getElementById('loginScreen').hidden = true;
+        document.getElementById('adminApp').hidden = false;
+        initAdminApp();
+      } else {
+        err.textContent = '❌ 비밀번호가 올바르지 않아요.';
+      }
+    }).catch(function(){
+      err.textContent = '⚠️ 서버에 연결할 수 없어요.';
+    });
+  }
+  document.getElementById('adminLoginBtn').addEventListener('click', function(){
+    tryLogin(document.getElementById('adminPasswordInput').value);
+  });
+  document.getElementById('adminPasswordInput').addEventListener('keydown', function(e){
+    if(e.key === 'Enter') tryLogin(this.value);
+  });
+  document.getElementById('logoutBtn').addEventListener('click', function(){
+    sessionStorage.removeItem('mgs_admin_pw');
+    location.reload();
+  });
+
+  if(adminPassword){
+    document.getElementById('loginScreen').hidden = true;
+    document.getElementById('adminApp').hidden = false;
+    initAdminApp();
+  }
+
+  /* ================= 탭 ================= */
+  function bindTabs(){
+    document.querySelectorAll('.tab-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+        document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+        if(btn.dataset.tab === 'tabStatus') loadStatus();
+        if(btn.dataset.tab === 'tabRoster') loadRoster();
+      });
+    });
+  }
+
+  var rosterCache = [];
+
+  function initAdminApp(){
+    bindTabs();
+    loadStatus();
+    loadRoster();
+    populateSituationSelect();
+  }
+
+  /* ================= 제출현황 ================= */
+  function loadStatus(){
+    var classFilter = document.getElementById('statusClassFilter').value;
+    var wrap = document.getElementById('statusTableWrap');
+    wrap.innerHTML = '<p>불러오는 중...</p>';
+    apiGet({action:'adminGetStatus', classFilter: classFilter, password: adminPassword}).then(function(res){
+      if(res.error){ wrap.innerHTML = '<p>⚠️ '+res.error+'</p>'; return; }
+      var list = res.list || [];
+      var submittedCount = list.filter(function(s){return s.submitted;}).length;
+      document.getElementById('statusSummary').textContent = submittedCount + ' / ' + list.length + '명 제출';
+
+      var classSet = {};
+      list.forEach(function(s){ classSet[s.classNo] = true; });
+      var classSel = document.getElementById('statusClassFilter');
+      var currentVal = classSel.value;
+      classSel.innerHTML = '<option value="">전체</option>' + Object.keys(classSet).sort().map(function(c){
+        return '<option value="'+c+'"'+(c===currentVal?' selected':'')+'>'+c+'반</option>';
+      }).join('');
+
+      wrap.innerHTML = '<table class="data-table"><thead><tr><th>학년</th><th>반</th><th>번호</th><th>이름</th><th>학번</th><th>제출여부</th><th>제출시간</th></tr></thead><tbody>'+
+        list.map(function(s){
+          return '<tr><td>'+s.grade+'</td><td>'+s.classNo+'</td><td>'+s.number+'</td><td>'+s.name+'</td><td>'+s.studentId+'</td>'+
+            '<td>'+(s.submitted ? '<span class="badge ok">제출완료</span>' : '<span class="badge no">미제출</span>')+'</td>'+
+            '<td>'+(s.submittedAt ? new Date(s.submittedAt).toLocaleString('ko-KR') : '-')+'</td></tr>';
+        }).join('') +
+      '</tbody></table>';
+    }).catch(function(){ wrap.innerHTML = '<p>⚠️ 서버에 연결할 수 없어요.</p>'; });
+  }
+  document.getElementById('refreshStatusBtn').addEventListener('click', loadStatus);
+  document.getElementById('statusClassFilter').addEventListener('change', loadStatus);
+
+  /* ================= 명렬표 관리 ================= */
+  function loadRoster(){
+    var wrap = document.getElementById('rosterTableWrap');
+    wrap.innerHTML = '<p>불러오는 중...</p>';
+    apiGet({action:'adminGetRoster', password: adminPassword}).then(function(res){
+      if(res.error){ wrap.innerHTML = '<p>⚠️ '+res.error+'</p>'; return; }
+      rosterCache = res.roster || [];
+      renderRosterTable();
+      populateStudentViewSelect();
+    }).catch(function(){ wrap.innerHTML = '<p>⚠️ 서버에 연결할 수 없어요.</p>'; });
+  }
+
+  function renderRosterTable(){
+    var wrap = document.getElementById('rosterTableWrap');
+    wrap.innerHTML = '<table class="data-table"><thead><tr><th>학년</th><th>반</th><th>번호</th><th>이름</th><th>학번</th><th></th></tr></thead><tbody>'+
+      rosterCache.map(function(r){
+        return '<tr data-row="'+r._row+'">'+
+          '<td><input type="text" class="roster-input" data-field="학년" value="'+val(r,'학년')+'"></td>'+
+          '<td><input type="text" class="roster-input" data-field="반" value="'+val(r,'반')+'"></td>'+
+          '<td><input type="text" class="roster-input" data-field="번호" value="'+val(r,'번호')+'"></td>'+
+          '<td><input type="text" class="roster-input name" data-field="이름" value="'+val(r,'이름')+'"></td>'+
+          '<td>'+val(r,'학번')+'</td>'+
+          '<td style="white-space:nowrap;"><button class="btn-small save-roster-btn">💾 저장</button> <button class="btn-danger del-roster-btn">삭제</button></td>'+
+        '</tr>';
+      }).join('') +
+    '</tbody></table>';
+
+    wrap.querySelectorAll('.save-roster-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var tr = btn.closest('tr');
+        var rowIndex = tr.dataset.row;
+        var body = { action:'adminRosterUpdate', password: adminPassword, rowIndex: rowIndex };
+        tr.querySelectorAll('[data-field]').forEach(function(inp){
+          if(inp.dataset.field==='학년') body.grade = inp.value;
+          if(inp.dataset.field==='반') body.classNo = inp.value;
+          if(inp.dataset.field==='번호') body.number = inp.value;
+          if(inp.dataset.field==='이름') body.name = inp.value;
+        });
+        apiPost(body).then(function(res){
+          if(res.ok){ loadRoster(); loadStatus(); } else { alert('저장 실패: '+(res.error||'')); }
+        });
+      });
+    });
+    wrap.querySelectorAll('.del-roster-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(!confirm('이 학생을 명렬표에서 삭제할까요?')) return;
+        var tr = btn.closest('tr');
+        apiPost({action:'adminRosterDelete', password: adminPassword, rowIndex: tr.dataset.row}).then(function(res){
+          if(res.ok){ loadRoster(); loadStatus(); } else { alert('삭제 실패: '+(res.error||'')); }
+        });
+      });
+    });
+  }
+
+  document.getElementById('addRosterBtn').addEventListener('click', function(){
+    var grade = document.getElementById('newGrade').value.trim();
+    var classNo = document.getElementById('newClass').value.trim();
+    var number = document.getElementById('newNumber').value.trim();
+    var name = document.getElementById('newName').value.trim();
+    if(!grade || !classNo || !number || !name){ alert('학년/반/번호/이름을 모두 입력해주세요.'); return; }
+    apiPost({action:'adminRosterAdd', password: adminPassword, grade:grade, classNo:classNo, number:number, name:name}).then(function(res){
+      if(res.ok){
+        document.getElementById('newGrade').value = '';
+        document.getElementById('newClass').value = '';
+        document.getElementById('newNumber').value = '';
+        document.getElementById('newName').value = '';
+        loadRoster(); loadStatus();
+      } else { alert('추가 실패: '+(res.error||'')); }
+    });
+  });
+
+  /* ================= 학생 활동 보기 (발표 화면 스타일) ================= */
+  function populateStudentViewSelect(){
+    var sel = document.getElementById('studentViewSelect');
+    sel.innerHTML = '<option value="">학생을 선택해주세요</option>' + rosterCache.map(function(r){
+      return '<option value="'+val(r,'학번')+'">'+val(r,'학년')+'학년 '+val(r,'반')+'반 '+val(r,'번호')+'번 '+val(r,'이름')+' ('+val(r,'학번')+')</option>';
+    }).join('');
+  }
+  document.getElementById('studentViewSelect').addEventListener('change', function(){
+    var sid = this.value;
+    var box = document.getElementById('studentViewBox');
+    if(!sid){ box.innerHTML = ''; return; }
+    box.innerHTML = '<p>불러오는 중...</p>';
+    apiGet({action:'adminGetStudentDetail', studentId: sid, password: adminPassword}).then(function(res){
+      if(res.error){ box.innerHTML = '<p>⚠️ '+res.error+'</p>'; return; }
+      if(!res.found){ box.innerHTML = '<p>아직 제출된 내용이 없어요.</p>'; return; }
+      box.innerHTML = buildPresentCard(res.data);
+    }).catch(function(){ box.innerHTML = '<p>⚠️ 서버에 연결할 수 없어요.</p>'; });
+  });
+  document.getElementById('exportStudentViewBtn').addEventListener('click', function(){
+    var el = document.getElementById('presentCardInner');
+    if(!el){ alert('먼저 학생을 선택해주세요.'); return; }
+    html2canvas(el, {backgroundColor:'#FFFDF8', scale:2}).then(function(canvas){
+      var link = document.createElement('a');
+      link.download = '학생활동_발표화면.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  });
+
+  function buildPresentCard(d){
+    function situBlock(prefix, n, fields){
+      return '<div class="present-situ"><div class="present-situ-title">'+val(d, prefix+n+'_제목')+'</div>'+
+        fields.map(function(f){ return '<div class="present-qa"><b>'+f.label+'</b>'+val(d, prefix+n+'_'+f.key)+'</div>'; }).join('') +
+      '</div>';
+    }
+    return '<div class="present-card" id="presentCardInner">'+
+      '<div class="present-header"><h2>'+val(d,'이름')+'님의 마음의 근육 활동</h2><div class="present-sub">학번 '+val(d,'학번')+' · 나의 근육: 🌟 '+val(d,'선택근육1순위')+'</div></div>'+
+      '<div class="present-body">'+
+        '<div class="present-section"><div class="present-section-title">💪 이겨낼 수 있는 상황</div>'+
+          situBlock('이겨낸상황',1,[{label:'이유',key:'이유'},{label:'대응법',key:'대응법'},{label:'흔들리는 이유',key:'흔들리는이유'},{label:'다시 잡는 법',key:'다시잡는법'}]) +
+          situBlock('이겨낸상황',2,[{label:'이유',key:'이유'},{label:'대응법',key:'대응법'},{label:'흔들리는 이유',key:'흔들리는이유'},{label:'다시 잡는 법',key:'다시잡는법'}]) +
+        '</div>'+
+        '<div class="present-section"><div class="present-section-title">🌪️ 흔들릴 수 있는 상황</div>'+
+          situBlock('흔들린상황',1,[{label:'왜 어려운지',key:'왜어려운지'},{label:'필요한 근육',key:'필요근육'},{label:'실천',key:'실천'}]) +
+          situBlock('흔들린상황',2,[{label:'왜 어려운지',key:'왜어려운지'},{label:'필요한 근육',key:'필요근육'},{label:'실천',key:'실천'}]) +
+        '</div>'+
+        '<div class="present-section"><div class="present-section-title">💌 근육 사용 선언</div>'+
+          '<div class="present-letter">나의 근육: '+val(d,'선언근육')+'\n\n'+val(d,'선언편지내용')+'</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  /* ================= 상황별 조회 (실명) ================= */
+  function populateSituationSelect(){
+    document.getElementById('situationViewSelect').innerHTML = SITUATIONS.map(function(s){
+      return '<option value="'+s.id+'">'+s.emoji+' '+s.title+'</option>';
+    }).join('');
+    loadSituationView();
+  }
+  document.getElementById('situationViewSelect').addEventListener('change', loadSituationView);
+
+  function loadSituationView(){
+    var sid = document.getElementById('situationViewSelect').value;
+    var box = document.getElementById('situationViewBox');
+    box.innerHTML = '<p>불러오는 중...</p>';
+    apiGet({action:'adminGetSituationView', situationId: sid, password: adminPassword}).then(function(res){
+      if(res.error){ box.innerHTML = '<p>⚠️ '+res.error+'</p>'; return; }
+      var entries = res.entries || [];
+      if(entries.length===0){ box.innerHTML = '<p>아직 이 상황에 대한 데이터가 없어요.</p>'; return; }
+      box.innerHTML = entries.map(function(e){
+        if(e.type==='overcome'){
+          return '<div class="friend-entry"><div class="who">'+e.name+' ('+e.studentId+') <span class="type-tag">이겨낸 상황 · 근육: '+e.usedMuscle+'</span></div>'+
+            '<div class="present-qa"><b>이유</b>'+e.reason+'</div><div class="present-qa"><b>대응법</b>'+e.response+'</div>'+
+            '<div class="present-qa"><b>흔들리는 이유</b>'+e.wobbleReason+'</div><div class="present-qa"><b>다시 잡는 법</b>'+e.recover+'</div></div>';
+        } else {
+          return '<div class="friend-entry"><div class="who">'+e.name+' ('+e.studentId+') <span class="type-tag">흔들린 상황</span></div>'+
+            '<div class="present-qa"><b>왜 어려운지</b>'+e.why+'</div><div class="present-qa"><b>필요한 근육</b>'+e.neededMuscle+'</div><div class="present-qa"><b>실천</b>'+e.practice+'</div></div>';
+        }
+      }).join('');
+    }).catch(function(){ box.innerHTML = '<p>⚠️ 서버에 연결할 수 없어요.</p>'; });
+  }
+
+})();
+</script>
+</body>
+</html>
