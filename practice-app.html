@@ -1063,7 +1063,28 @@
   function resetToWelcome(){
     if(!confirm('처음 화면으로 돌아갈까요? 지금까지 작성한 내용은 이 기기에서 삭제돼요. (이미 제출한 내용은 구글시트에 안전하게 남아있어요)')) return;
     localStorage.removeItem(LS_KEY);
-    location.reload();
+
+    state.profile = null;
+    state.hasSubmitted = false;
+    state.muscle = '';
+    state.overcomeIds = [];
+    state.struggleIds = [];
+    state.overcomeData = {};
+    state.struggleData = {};
+    state.declare = { letter:'', style:'letter', color:'yellow' };
+
+    document.getElementById('resetBanner').hidden = true;
+    document.getElementById('mainApp').hidden = true;
+
+    document.getElementById('inputName').value = '';
+    document.getElementById('confirmedName').value = '';
+    document.getElementById('confirmedStudentId').value = '';
+    document.getElementById('lookupResult').hidden = true;
+    document.getElementById('studentMatches').hidden = true;
+    document.getElementById('studentMatches').innerHTML = '';
+    document.getElementById('startBtn').disabled = true;
+
+    welcomeModal.hidden = false;
   }
   document.getElementById('restartBtn').addEventListener('click', resetToWelcome);
   document.getElementById('bannerRestartBtn').addEventListener('click', resetToWelcome);
