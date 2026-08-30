@@ -116,6 +116,7 @@
     <section id="tabStatus" class="tab-panel active">
       <div class="card-box">
         <div class="filter-row">
+          <label>학년 필터: <select id="statusGradeFilter"><option value="">전체</option></select></label>
           <label>반 필터: <select id="statusClassFilter"><option value="">전체</option></select></label>
           <button class="btn-small" id="refreshStatusBtn">🔄 새로고침</button>
           <span id="statusSummary" style="margin-left:auto; font-weight:bold;"></span>
@@ -224,7 +225,11 @@
   });
   document.getElementById('logoutBtn').addEventListener('click', function(){
     sessionStorage.removeItem('mgs_admin_pw');
-    location.reload();
+    adminPassword = '';
+    document.getElementById('adminApp').hidden = true;
+    document.getElementById('adminPasswordInput').value = '';
+    document.getElementById('loginError').textContent = '';
+    document.getElementById('loginScreen').hidden = false;
   });
 
   if(adminPassword){
@@ -257,23 +262,33 @@
   }
 
   /* ================= 제출현황 ================= */
+  function populateStatusFilters(){
+    var gradeSet = {}, classSet = {};
+    rosterCache.forEach(function(r){ gradeSet[val(r,'학년')] = true; classSet[val(r,'반')] = true; });
+
+    var gradeSel = document.getElementById('statusGradeFilter');
+    var gCurrent = gradeSel.value;
+    gradeSel.innerHTML = '<option value="">전체</option>' + Object.keys(gradeSet).sort().map(function(g){
+      return '<option value="'+g+'"'+(g===gCurrent?' selected':'')+'>'+g+'학년</option>';
+    }).join('');
+
+    var classSel = document.getElementById('statusClassFilter');
+    var cCurrent = classSel.value;
+    classSel.innerHTML = '<option value="">전체</option>' + Object.keys(classSet).sort().map(function(c){
+      return '<option value="'+c+'"'+(c===cCurrent?' selected':'')+'>'+c+'반</option>';
+    }).join('');
+  }
+
   function loadStatus(){
+    var gradeFilter = document.getElementById('statusGradeFilter').value;
     var classFilter = document.getElementById('statusClassFilter').value;
     var wrap = document.getElementById('statusTableWrap');
     wrap.innerHTML = '<p>불러오는 중...</p>';
-    apiGet({action:'adminGetStatus', classFilter: classFilter, password: adminPassword}).then(function(res){
+    apiGet({action:'adminGetStatus', gradeFilter: gradeFilter, classFilter: classFilter, password: adminPassword}).then(function(res){
       if(res.error){ wrap.innerHTML = '<p>⚠️ '+res.error+'</p>'; return; }
       var list = res.list || [];
       var submittedCount = list.filter(function(s){return s.submitted;}).length;
       document.getElementById('statusSummary').textContent = submittedCount + ' / ' + list.length + '명 제출';
-
-      var classSet = {};
-      list.forEach(function(s){ classSet[s.classNo] = true; });
-      var classSel = document.getElementById('statusClassFilter');
-      var currentVal = classSel.value;
-      classSel.innerHTML = '<option value="">전체</option>' + Object.keys(classSet).sort().map(function(c){
-        return '<option value="'+c+'"'+(c===currentVal?' selected':'')+'>'+c+'반</option>';
-      }).join('');
 
       wrap.innerHTML = '<table class="data-table"><thead><tr><th>학년</th><th>반</th><th>번호</th><th>이름</th><th>학번</th><th>제출여부</th><th>제출시간</th></tr></thead><tbody>'+
         list.map(function(s){
@@ -285,6 +300,7 @@
     }).catch(function(){ wrap.innerHTML = '<p>⚠️ 서버에 연결할 수 없어요.</p>'; });
   }
   document.getElementById('refreshStatusBtn').addEventListener('click', loadStatus);
+  document.getElementById('statusGradeFilter').addEventListener('change', loadStatus);
   document.getElementById('statusClassFilter').addEventListener('change', loadStatus);
 
   /* ================= 명렬표 관리 ================= */
@@ -296,6 +312,7 @@
       rosterCache = res.roster || [];
       renderRosterTable();
       populateStudentViewSelect();
+      populateStatusFilters();
     }).catch(function(){ wrap.innerHTML = '<p>⚠️ 서버에 연결할 수 없어요.</p>'; });
   }
 
