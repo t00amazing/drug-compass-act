@@ -197,6 +197,7 @@
   .present-section-title{ display:flex; align-items:center; gap:10px; font-family:'Gowun Batang', serif; font-size:1.15rem; font-weight:700; margin-bottom:14px; padding-bottom:8px; border-bottom:2px solid #F3EDE0; }
   .present-situ{ background:#FFFDF8; border-radius:var(--radius-md); padding:16px 20px; margin-bottom:14px; border:2px solid #F3EDE0; }
   .present-situ-title{ font-weight:bold; font-size:1.05rem; margin-bottom:8px; }
+  .present-situ-desc{ font-size:0.88rem; color:var(--ink-soft); line-height:1.55; margin-bottom:12px; padding-bottom:10px; border-bottom:1px dashed #EFE6D8; }
   .present-qa{ margin-bottom:8px; font-size:0.95rem; line-height:1.6; }
   .present-qa b{ display:block; color:var(--ink-soft); font-size:0.82rem; margin-bottom:2px; font-weight:bold; }
   .present-letter{ background:#FFFDF6; border-radius:var(--radius-md); padding:24px; font-family:'Gowun Batang', serif; font-size:1.1rem; white-space:pre-wrap; line-height:1.8; background-image:repeating-linear-gradient(#FFFDF6 0px, #FFFDF6 34px, #F3ECDD 35px); }
@@ -312,7 +313,7 @@
     <section id="tabMuscle" class="tab-panel active">
       <details class="objective-note" open>
         <summary>🎯 이 활동의 목표</summary>
-        <p>자가진단으로 발견한 상위 3가지 마음의 근육을 이 활동에 이어서 적용할 수 있다.</p>
+        <p>자가진단으로 발견한 나의 제일 강력한 마음의 근육을 이 활동에 이어서 적용할 수 있다.</p>
       </details>
 
       <h2>내 마음의 근육 선택하기</h2>
@@ -339,11 +340,6 @@
       </div>
       <p>상황 카드마다 있는 두 버튼 중 하나를 눌러서 "이겨낼 수 있는 상황"인지 "흔들릴 수 있는 상황"인지 선택하고, 그 자리에서 바로 입력할 수 있어요. 하나의 상황은 한쪽에만 넣을 수 있어요.</p>
       <div id="situationList"></div>
-
-      <div class="export-controls">
-        <button class="btn-primary" id="situationExportBtn">🖼️ 이미지로 내보내기</button>
-        <p class="mobile-save-hint">📱 모바일에서는 이미지가 새 탭에 열릴 수 있어요. 그럴 땐 이미지를 길게 눌러 저장해주세요.</p>
-      </div>
     </section>
 
     <!-- ---------- TAB: 근육사용선언 ---------- -->
@@ -947,7 +943,9 @@
       var mObj = MUSCLES.filter(function(m){return m.name===muscleName;})[0];
 
       function situBlock(prefix, n, fields){
+        var s = situationById(val(d, prefix+n+'_ID'));
         return '<div class="present-situ"><div class="present-situ-title">'+val(d, prefix+n+'_제목')+'</div>'+
+          (s ? '<div class="present-situ-desc">'+s.desc+'</div>' : '') +
           fields.map(function(f){ return '<div class="present-qa"><b>'+f.label+'</b>'+val(d, prefix+n+'_'+f.key)+'</div>'; }).join('') +
         '</div>';
       }
@@ -1079,9 +1077,6 @@
       link.click();
     });
   }
-  document.getElementById('situationExportBtn').addEventListener('click', function(){
-    exportElement(document.getElementById('tabSituation'), '상황카드연습.png');
-  });
   document.getElementById('declareExportBtn').addEventListener('click', function(){
     var target = state.declare.style==='letter' ? document.getElementById('letterPreview') : document.getElementById('postitPreview');
     exportElement(target, '근육사용선언.png');
