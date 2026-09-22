@@ -242,6 +242,8 @@
 
 <div class="ambient" id="ambient"></div>
 
+<div id="loadingScreen" style="text-align:center; padding:80px 20px; font-size:1.1rem; color:#8A7F6C;">🌱 불러오는 중...</div>
+
 <!-- ===================== Welcome (full page, not a modal) ===================== -->
 <div id="welcomeModal" class="fullpage" hidden>
   <div class="wrap">
@@ -457,7 +459,8 @@
   })();
 
   /* ---------------- Data ---------------- */
-  var SITUATIONS = [
+  var SITUATIONS = [];
+  var DEFAULT_SITUATIONS = [
     {id:1, emoji:'🚬', title:'한 개비만', desc:'축제 뒤풀이 자리에서 친한 선배가 "스트레스 풀려면 이거 하나면 돼"라며 전자담배를 건넨다. "한번 피워봐, 중독 안 돼"라는 말이 따라온다.'},
     {id:2, emoji:'🍺', title:'분위기 때문에', desc:'수능이 끝난 뒤 친구들이 "이제 마셔도 되잖아"라며 편의점 앞에서 캔맥주를 권한다. 분위기상 거절하면 혼자만 이상한 사람이 될 것 같다.'},
     {id:3, emoji:'📱', title:'숏폼의 늪', desc:'숙제를 하려고 폰을 들었는데, 릴스를 3개만 보고 놓으려다 어느새 1시간이 지났다. 알고리즘이 계속 "딱 하나만 더"를 추천한다.'},
@@ -1121,11 +1124,26 @@
   }
 
   /* ================= 시작 ================= */
-  if(state.profile){
-    enterApp();
-  } else {
-    welcomeModal.hidden = false;
+  function loadSituations(){
+    return apiGet({action:'getSituations'}).then(function(res){
+      if(res && res.situations && res.situations.length > 0){
+        SITUATIONS = res.situations;
+      } else {
+        SITUATIONS = DEFAULT_SITUATIONS;
+      }
+    }).catch(function(){
+      SITUATIONS = DEFAULT_SITUATIONS;
+    });
   }
+
+  loadSituations().then(function(){
+    document.getElementById('loadingScreen').hidden = true;
+    if(state.profile){
+      enterApp();
+    } else {
+      welcomeModal.hidden = false;
+    }
+  });
 
 })();
 </script>
