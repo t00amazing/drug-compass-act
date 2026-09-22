@@ -109,6 +109,7 @@
     <button class="tab-btn" data-tab="tabRoster">📋 명렬표 관리</button>
     <button class="tab-btn" data-tab="tabStudentView">📄 학생 활동 보기</button>
     <button class="tab-btn" data-tab="tabSituationView">🃏 상황별 조회</button>
+    <button class="tab-btn" data-tab="tabSituationEdit">✏️ 상황카드 관리</button>
   </nav>
 
   <main>
@@ -163,6 +164,22 @@
         <div id="situationViewBox"></div>
       </div>
     </section>
+
+    <!-- ---------- 상황카드 관리 ---------- -->
+    <section id="tabSituationEdit" class="tab-panel">
+      <div class="card-box">
+        <h2>✏️ 상황카드 관리</h2>
+        <p style="color:var(--ink-soft); margin-bottom:14px;">여기서 수정하면 학생 화면에도 그대로 반영돼요.</p>
+        <div id="situationEditTableWrap"><p>불러오는 중...</p></div>
+        <div class="add-form">
+          <input type="text" id="newSitId" placeholder="번호" class="roster-input">
+          <input type="text" id="newSitEmoji" placeholder="이모지" class="roster-input">
+          <input type="text" id="newSitTitle" placeholder="제목" class="roster-input name">
+          <input type="text" id="newSitDesc" placeholder="설명" class="roster-input name" style="flex:2; min-width:260px;">
+          <button class="btn-primary" id="addSituationBtn">➕ 추가</button>
+        </div>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -173,7 +190,8 @@
   // ⚠️ 배포한 GAS 웹앱 URL을 여기에 넣어주세요 (practice-app.html과 동일한 URL)
   var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzc7lWYXXQWVuDSX4rEjv6P4k0FC_GAaqUC3a-tHBWAyreWsc9fwaDq3lV3DpoIkWk/exec';
 
-  var SITUATIONS = [
+  var SITUATIONS = [];
+  var DEFAULT_SITUATIONS = [
     {id:1, emoji:'🚬', title:'한 개비만', desc:'축제 뒤풀이 자리에서 친한 선배가 "스트레스 풀려면 이거 하나면 돼"라며 전자담배를 건넨다. "한번 피워봐, 중독 안 돼"라는 말이 따라온다.'},
     {id:2, emoji:'🍺', title:'분위기 때문에', desc:'수능이 끝난 뒤 친구들이 "이제 마셔도 되잖아"라며 편의점 앞에서 캔맥주를 권한다. 분위기상 거절하면 혼자만 이상한 사람이 될 것 같다.'},
     {id:3, emoji:'📱', title:'숏폼의 늪', desc:'숙제를 하려고 폰을 들었는데, 릴스를 3개만 보고 놓으려다 어느새 1시간이 지났다. 알고리즘이 계속 "딱 하나만 더"를 추천한다.'},
@@ -197,6 +215,7 @@
       .then(function(r){ return r.json(); });
   }
   function val(d,key){ return (d && d[key]!==undefined && d[key]!==null) ? d[key] : ''; }
+  function escAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function situationById(id){ return SITUATIONS.filter(function(s){ return s.id===Number(id); })[0]; }
 
   /* ================= 로그인 ================= */
@@ -248,17 +267,30 @@
         document.getElementById(btn.dataset.tab).classList.add('active');
         if(btn.dataset.tab === 'tabStatus') loadStatus();
         if(btn.dataset.tab === 'tabRoster') loadRoster();
+        if(btn.dataset.tab === 'tabSituationEdit') loadSituationsForEdit();
       });
     });
   }
 
   var rosterCache = [];
 
+  function loadSituations(){
+    return apiGet({action:'getSituations'}).then(function(res){
+      if(res && res.situations && res.situations.length > 0){
+        SITUATIONS = res.situations;
+      } else {
+        SITUATIONS = DEFAULT_SITUATIONS;
+      }
+    }).catch(function(){
+      SITUATIONS = DEFAULT_SITUATIONS;
+    });
+  }
+
   function initAdminApp(){
     bindTabs();
     loadStatus();
     loadRoster();
-    populateSituationSelect();
+    loadSituations().then(function(){ populateSituationSelect(); });
   }
 
   /* ================= 제출현황 ================= */
@@ -321,10 +353,10 @@
     wrap.innerHTML = '<table class="data-table"><thead><tr><th>학년</th><th>반</th><th>번호</th><th>이름</th><th>학번</th><th></th></tr></thead><tbody>'+
       rosterCache.map(function(r){
         return '<tr data-row="'+r._row+'">'+
-          '<td><input type="text" class="roster-input" data-field="학년" value="'+val(r,'학년')+'"></td>'+
-          '<td><input type="text" class="roster-input" data-field="반" value="'+val(r,'반')+'"></td>'+
-          '<td><input type="text" class="roster-input" data-field="번호" value="'+val(r,'번호')+'"></td>'+
-          '<td><input type="text" class="roster-input name" data-field="이름" value="'+val(r,'이름')+'"></td>'+
+          '<td><input type="text" class="roster-input" data-field="학년" value="'+escAttr(val(r,'학년'))+'"></td>'+
+          '<td><input type="text" class="roster-input" data-field="반" value="'+escAttr(val(r,'반'))+'"></td>'+
+          '<td><input type="text" class="roster-input" data-field="번호" value="'+escAttr(val(r,'번호'))+'"></td>'+
+          '<td><input type="text" class="roster-input name" data-field="이름" value="'+escAttr(val(r,'이름'))+'"></td>'+
           '<td>'+val(r,'학번')+'</td>'+
           '<td style="white-space:nowrap;"><button class="btn-small save-roster-btn">💾 저장</button> <button class="btn-danger del-roster-btn">삭제</button></td>'+
         '</tr>';
@@ -371,6 +403,77 @@
         document.getElementById('newNumber').value = '';
         document.getElementById('newName').value = '';
         loadRoster(); loadStatus();
+      } else { alert('추가 실패: '+(res.error||'')); }
+    });
+  });
+
+  /* ================= 상황카드 관리 ================= */
+  var situationEditCache = [];
+
+  function loadSituationsForEdit(){
+    var wrap = document.getElementById('situationEditTableWrap');
+    wrap.innerHTML = '<p>불러오는 중...</p>';
+    apiGet({action:'adminGetSituations', password: adminPassword}).then(function(res){
+      if(res.error){ wrap.innerHTML = '<p>⚠️ '+res.error+'</p>'; return; }
+      situationEditCache = res.situations || [];
+      renderSituationEditTable();
+    }).catch(function(){ wrap.innerHTML = '<p>⚠️ 서버에 연결할 수 없어요.</p>'; });
+  }
+
+  function renderSituationEditTable(){
+    var wrap = document.getElementById('situationEditTableWrap');
+    wrap.innerHTML = '<table class="data-table"><thead><tr><th>번호</th><th>이모지</th><th>제목</th><th>설명</th><th></th></tr></thead><tbody>'+
+      situationEditCache.map(function(s){
+        return '<tr data-row="'+s._row+'">'+
+          '<td><input type="text" class="roster-input" data-field="번호" value="'+escAttr(val(s,'번호'))+'" style="width:50px;"></td>'+
+          '<td><input type="text" class="roster-input" data-field="이모지" value="'+escAttr(val(s,'이모지'))+'" style="width:60px;"></td>'+
+          '<td><input type="text" class="roster-input name" data-field="제목" value="'+escAttr(val(s,'제목'))+'"></td>'+
+          '<td><input type="text" class="roster-input name" data-field="설명" value="'+escAttr(val(s,'설명'))+'" style="min-width:280px;"></td>'+
+          '<td style="white-space:nowrap;"><button class="btn-small save-sit-btn">💾 저장</button> <button class="btn-danger del-sit-btn">삭제</button></td>'+
+        '</tr>';
+      }).join('') +
+    '</tbody></table>';
+
+    wrap.querySelectorAll('.save-sit-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var tr = btn.closest('tr');
+        var rowIndex = tr.dataset.row;
+        var body = { action:'adminSituationUpdate', password: adminPassword, rowIndex: rowIndex };
+        tr.querySelectorAll('[data-field]').forEach(function(inp){
+          if(inp.dataset.field==='번호') body.id = inp.value;
+          if(inp.dataset.field==='이모지') body.emoji = inp.value;
+          if(inp.dataset.field==='제목') body.title = inp.value;
+          if(inp.dataset.field==='설명') body.desc = inp.value;
+        });
+        apiPost(body).then(function(res){
+          if(res.ok){ loadSituationsForEdit(); } else { alert('저장 실패: '+(res.error||'')); }
+        });
+      });
+    });
+    wrap.querySelectorAll('.del-sit-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(!confirm('이 상황카드를 삭제할까요?')) return;
+        var tr = btn.closest('tr');
+        apiPost({action:'adminSituationDelete', password: adminPassword, rowIndex: tr.dataset.row}).then(function(res){
+          if(res.ok){ loadSituationsForEdit(); } else { alert('삭제 실패: '+(res.error||'')); }
+        });
+      });
+    });
+  }
+
+  document.getElementById('addSituationBtn').addEventListener('click', function(){
+    var id = document.getElementById('newSitId').value.trim();
+    var emoji = document.getElementById('newSitEmoji').value.trim();
+    var title = document.getElementById('newSitTitle').value.trim();
+    var desc = document.getElementById('newSitDesc').value.trim();
+    if(!id || !title || !desc){ alert('번호/제목/설명은 꼭 입력해주세요.'); return; }
+    apiPost({action:'adminSituationAdd', password: adminPassword, id:id, emoji:emoji, title:title, desc:desc}).then(function(res){
+      if(res.ok){
+        document.getElementById('newSitId').value = '';
+        document.getElementById('newSitEmoji').value = '';
+        document.getElementById('newSitTitle').value = '';
+        document.getElementById('newSitDesc').value = '';
+        loadSituationsForEdit();
       } else { alert('추가 실패: '+(res.error||'')); }
     });
   });
